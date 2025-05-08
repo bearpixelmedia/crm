@@ -1,170 +1,190 @@
-import type { Metadata } from "next"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { CalendarDateRangePicker } from "@/components/date-range-picker"
-import { MainNav } from "@/components/main-nav"
-import { Overview } from "@/components/overview"
-import { RecentSales } from "@/components/recent-sales"
-import { Search } from "@/components/search"
-import { UserNav } from "@/components/user-nav"
-import { ClientStats } from "@/components/client-stats"
-import { ProjectStats } from "@/components/project-stats"
-import { MarketingStats } from "@/components/marketing-stats"
+"use client"
 
-export const metadata: Metadata = {
-  title: "White Fox Studios CRM",
-  description: "Client Relationship Management for White Fox Studios",
+import { useState, useEffect } from "react"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Progress } from "@/components/ui/progress"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+
+// This would come from your actual tracking spreadsheet
+const sections = [
+  {
+    name: "Dashboard / Overview",
+    features: [
+      { name: "Real-time KPI Cards", status: "in-progress", completion: 60 },
+      { name: "Overview Charts", status: "not-started", completion: 0 },
+      { name: "Recent Activity Feed", status: "completed", completion: 100 },
+      { name: "Quick Actions", status: "in-progress", completion: 40 },
+    ],
+  },
+  {
+    name: "Clients Section",
+    features: [
+      { name: "Client List View", status: "completed", completion: 100 },
+      { name: "Client Detail View", status: "in-progress", completion: 75 },
+      { name: "Client Creation/Editing", status: "in-progress", completion: 50 },
+      { name: "Client Analytics", status: "not-started", completion: 0 },
+    ],
+  },
+  {
+    name: "Projects Section",
+    features: [
+      { name: "Project List View", status: "completed", completion: 100 },
+      { name: "Project Detail View", status: "in-progress", completion: 80 },
+      { name: "Project Creation/Editing", status: "in-progress", completion: 30 },
+      { name: "Task Management", status: "not-started", completion: 0 },
+    ],
+  },
+  {
+    name: "SEO Section",
+    features: [
+      { name: "SEO Dashboard", status: "in-progress", completion: 70 },
+      { name: "SEO Workflow Management", status: "in-progress", completion: 60 },
+      { name: "SEO Task Management", status: "completed", completion: 100 },
+      { name: "Competitor Analysis", status: "completed", completion: 100 },
+      { name: "SEO Reporting", status: "not-started", completion: 0 },
+    ],
+  },
+  {
+    name: "Google Sheets Integration",
+    features: [
+      { name: "Read Operations", status: "completed", completion: 100 },
+      { name: "Write Operations", status: "not-started", completion: 0 },
+      { name: "Data Synchronization", status: "not-started", completion: 0 },
+      { name: "Error Handling", status: "in-progress", completion: 50 },
+    ],
+  },
+]
+
+export default function ProgressTracker() {
+  const [activeTab, setActiveTab] = useState("overview")
+  const [overallProgress, setOverallProgress] = useState(0)
+  const [sectionProgress, setSectionProgress] = useState<Record<string, number>>({})
+
+  useEffect(() => {
+    // Calculate overall progress
+    let totalFeatures = 0
+    let totalCompletion = 0
+
+    sections.forEach((section) => {
+      section.features.forEach((feature) => {
+        totalFeatures++
+        totalCompletion += feature.completion
+      })
+    })
+
+    setOverallProgress(Math.round(totalCompletion / totalFeatures))
+
+    // Calculate section progress
+    const sectionStats: Record<string, number> = {}
+    sections.forEach((section) => {
+      let sectionTotal = 0
+      section.features.forEach((feature) => {
+        sectionTotal += feature.completion
+      })
+      sectionStats[section.name] = Math.round(sectionTotal / section.features.length)
+    })
+    setSectionProgress(sectionStats)
+  }, [])
+
+  return (
+    <div className="container mx-auto py-10">
+      <h1 className="text-3xl font-bold mb-6">White Fox CRM Progress Tracker</h1>
+
+      <Card className="mb-8">
+        <CardHeader>
+          <CardTitle>Overall Progress</CardTitle>
+          <CardDescription>Implementation progress across all features</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-2">
+            <div className="flex justify-between">
+              <span>Progress</span>
+              <span className="font-medium">{overallProgress}%</span>
+            </div>
+            <Progress value={overallProgress} className="h-2" />
+          </div>
+        </CardContent>
+      </Card>
+
+      <Tabs defaultValue="overview" value={activeTab} onValueChange={setActiveTab}>
+        <TabsList className="grid grid-cols-2 md:grid-cols-6 mb-6">
+          <TabsTrigger value="overview">Overview</TabsTrigger>
+          {sections.map((section) => (
+            <TabsTrigger key={section.name} value={section.name}>
+              {section.name.split(" ")[0]}
+            </TabsTrigger>
+          ))}
+        </TabsList>
+
+        <TabsContent value="overview">
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {sections.map((section) => (
+              <Card key={section.name}>
+                <CardHeader className="pb-2">
+                  <CardTitle>{section.name}</CardTitle>
+                  <CardDescription>
+                    {section.features.filter((f) => f.status === "completed").length} of {section.features.length}{" "}
+                    features completed
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-2">
+                    <div className="flex justify-between">
+                      <span>Progress</span>
+                      <span className="font-medium">{sectionProgress[section.name]}%</span>
+                    </div>
+                    <Progress value={sectionProgress[section.name]} className="h-2" />
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </TabsContent>
+
+        {sections.map((section) => (
+          <TabsContent key={section.name} value={section.name}>
+            <div className="grid gap-4">
+              {section.features.map((feature) => (
+                <Card key={feature.name}>
+                  <CardHeader className="pb-2">
+                    <div className="flex items-center justify-between">
+                      <CardTitle className="text-lg">{feature.name}</CardTitle>
+                      <StatusBadge status={feature.status} />
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-2">
+                      <div className="flex justify-between">
+                        <span>Completion</span>
+                        <span className="font-medium">{feature.completion}%</span>
+                      </div>
+                      <Progress value={feature.completion} className="h-2" />
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </TabsContent>
+        ))}
+      </Tabs>
+    </div>
+  )
 }
 
-export default function DashboardPage() {
+function StatusBadge({ status }: { status: string }) {
+  let bgColor = "bg-gray-100 text-gray-800"
+
+  if (status === "completed") {
+    bgColor = "bg-green-100 text-green-800"
+  } else if (status === "in-progress") {
+    bgColor = "bg-blue-100 text-blue-800"
+  } else if (status === "not-started") {
+    bgColor = "bg-gray-100 text-gray-800"
+  }
+
   return (
-    <div className="flex min-h-screen flex-col">
-      <div className="border-b">
-        <div className="flex h-16 items-center px-4">
-          <MainNav className="mx-6" />
-          <div className="ml-auto flex items-center space-x-4">
-            <Search />
-            <UserNav />
-          </div>
-        </div>
-      </div>
-      <div className="flex-1 space-y-4 p-8 pt-6">
-        <div className="flex items-center justify-between space-y-2">
-          <h2 className="text-3xl font-bold tracking-tight">Dashboard</h2>
-          <div className="flex items-center space-x-2">
-            <CalendarDateRangePicker />
-            <Button>Download</Button>
-          </div>
-        </div>
-        <Tabs defaultValue="overview" className="space-y-4">
-          <TabsList>
-            <TabsTrigger value="overview">Overview</TabsTrigger>
-            <TabsTrigger value="clients">Clients</TabsTrigger>
-            <TabsTrigger value="projects">Projects</TabsTrigger>
-            <TabsTrigger value="marketing">Marketing</TabsTrigger>
-          </TabsList>
-          <TabsContent value="overview" className="space-y-4">
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    className="h-4 w-4 text-muted-foreground"
-                  >
-                    <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
-                  </svg>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">$45,231.89</div>
-                  <p className="text-xs text-muted-foreground">+20.1% from last month</p>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Active Projects</CardTitle>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    className="h-4 w-4 text-muted-foreground"
-                  >
-                    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-                    <circle cx="9" cy="7" r="4" />
-                    <path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" />
-                  </svg>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">+12</div>
-                  <p className="text-xs text-muted-foreground">+3 since last month</p>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">New Clients</CardTitle>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    className="h-4 w-4 text-muted-foreground"
-                  >
-                    <rect width="20" height="14" x="2" y="5" rx="2" />
-                    <path d="M2 10h20" />
-                  </svg>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">+8</div>
-                  <p className="text-xs text-muted-foreground">+2 since last month</p>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">SEO Performance</CardTitle>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    className="h-4 w-4 text-muted-foreground"
-                  >
-                    <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
-                  </svg>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">+24%</div>
-                  <p className="text-xs text-muted-foreground">+5.2% from last month</p>
-                </CardContent>
-              </Card>
-            </div>
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
-              <Card className="col-span-4">
-                <CardHeader>
-                  <CardTitle>Overview</CardTitle>
-                </CardHeader>
-                <CardContent className="pl-2">
-                  <Overview />
-                </CardContent>
-              </Card>
-              <Card className="col-span-3">
-                <CardHeader>
-                  <CardTitle>Recent Sales</CardTitle>
-                  <CardDescription>You made 10 sales this month.</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <RecentSales />
-                </CardContent>
-              </Card>
-            </div>
-          </TabsContent>
-          <TabsContent value="clients" className="space-y-4">
-            <ClientStats />
-          </TabsContent>
-          <TabsContent value="projects" className="space-y-4">
-            <ProjectStats />
-          </TabsContent>
-          <TabsContent value="marketing" className="space-y-4">
-            <MarketingStats />
-          </TabsContent>
-        </Tabs>
-      </div>
-    </div>
+    <span className={`px-2 py-1 rounded-full text-xs font-medium ${bgColor}`}>
+      {status === "in-progress" ? "In Progress" : status === "not-started" ? "Not Started" : "Completed"}
+    </span>
   )
 }
