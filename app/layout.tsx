@@ -3,6 +3,7 @@ import "@/app/globals.css"
 import { Inter } from "next/font/google"
 import { ThemeProvider } from "@/components/theme-provider"
 import { DataProvider } from "@/context/data-context"
+import { ProgressProvider } from "@/context/progress-context"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -21,7 +22,9 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
-          <DataProvider>{children}</DataProvider>
+          <DataProvider>
+            <ProgressProvider>{children}</ProgressProvider>
+          </DataProvider>
         </ThemeProvider>
       </body>
     </html>

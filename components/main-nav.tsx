@@ -57,15 +57,6 @@ export function MainNav({ className, ...props }: React.HTMLAttributes<HTMLElemen
       >
         Marketing
       </Link>
-      <Link
-        href="/admin/progress"
-        className={cn(
-          "text-sm font-medium transition-colors hover:text-primary",
-          pathname === "/admin/progress" ? "text-primary" : "text-muted-foreground",
-        )}
-      >
-        Progress
-      </Link>
     </nav>
   )
 }
