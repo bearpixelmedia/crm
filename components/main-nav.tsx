@@ -61,9 +61,7 @@ export function MainNav({ className, ...props }: React.HTMLAttributes<HTMLElemen
         href="/admin/progress"
         className={cn(
           "text-sm font-medium transition-colors hover:text-primary",
-          pathname === "/admin/progress" || pathname.startsWith("/admin/progress/")
-            ? "text-primary"
-            : "text-muted-foreground",
+          pathname === "/admin/progress" ? "text-primary" : "text-muted-foreground",
         )}
       >
         Progress
