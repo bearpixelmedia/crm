@@ -7,7 +7,7 @@ export function ProgressButton() {
   const { openProgressModal } = useProgress()
 
   return (
-    <Button variant="outline" onClick={openProgressModal} className="ml-auto">
+    <Button variant="outline" size="sm" onClick={openProgressModal}>
       <svg
         xmlns="http://www.w3.org/2000/svg"
         width="16"
@@ -20,11 +20,7 @@ export function ProgressButton() {
         strokeLinejoin="round"
         className="mr-2"
       >
-        <path d="M12 20v-6" />
-        <path d="M12 14l-2-2 2-2 2 2-2 2Z" />
-        <path d="M12 4v4" />
-        <path d="M4 12h4" />
-        <path d="M16 12h4" />
+        <path d="M12 20v-6M6 20V10M18 20V4" />
       </svg>
       Progress
     </Button>

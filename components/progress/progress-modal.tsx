@@ -3,10 +3,8 @@
 import { useState } from "react"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Progress } from "@/components/ui/progress"
 import { implementationData } from "@/data/implementation-status"
-import { ProgressSummary } from "./progress-summary"
-import { SectionCard } from "./section-card"
-import { FeatureCard } from "./feature-card"
 
 interface ProgressModalProps {
   open: boolean
@@ -71,11 +69,24 @@ export function ProgressModal({ open, onOpenChange }: ProgressModalProps) {
 
             <h2 className="text-xl font-semibold mb-4">{activeSection}</h2>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4">
               {sectionProgress
                 .find((s) => s.name === activeSection)
                 ?.features.map((feature, index) => (
-                  <FeatureCard key={index} feature={feature} />
+                  <div key={index} className="border rounded-lg p-4">
+                    <div className="flex items-center justify-between mb-2">
+                      <h3 className="font-medium">{feature.name}</h3>
+                      <StatusBadge status={feature.status} />
+                    </div>
+                    <div className="space-y-2">
+                      <div className="flex justify-between">
+                        <span className="text-sm text-muted-foreground">Completion</span>
+                        <span className="text-sm font-medium">{feature.completion}%</span>
+                      </div>
+                      <Progress value={feature.completion} className="h-2" />
+                    </div>
+                    {feature.notes && <p className="mt-2 text-sm text-muted-foreground">{feature.notes}</p>}
+                  </div>
                 ))}
             </div>
           </div>
@@ -87,25 +98,34 @@ export function ProgressModal({ open, onOpenChange }: ProgressModalProps) {
                 <TabsTrigger value="sections">By Section</TabsTrigger>
               </TabsList>
 
-              <TabsContent value="overview" className="space-y-4">
-                <ProgressSummary
-                  overallProgress={overallProgress}
-                  totalFeatures={totalFeatures}
-                  completedFeatures={completedFeatures}
-                  inProgressFeatures={inProgressFeatures}
-                />
+              <TabsContent value="overview" className="space-y-4 pt-4">
+                <div className="space-y-2">
+                  <div className="flex justify-between">
+                    <span>Overall Progress</span>
+                    <span className="font-medium">{overallProgress}%</span>
+                  </div>
+                  <Progress value={overallProgress} className="h-2" />
+                  <div className="flex justify-between text-sm text-muted-foreground">
+                    <span>
+                      {completedFeatures} of {totalFeatures} features completed
+                    </span>
+                    <span>{inProgressFeatures} in progress</span>
+                  </div>
+                </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4">
                   {sectionProgress.map((section, index) => (
-                    <div key={index} className="flex items-center space-x-4">
-                      <div className="w-16 h-16 rounded-full flex items-center justify-center bg-gray-100">
-                        <span className="text-xl font-bold">{section.progress}%</span>
-                      </div>
-                      <div>
-                        <h3 className="font-medium">{section.name}</h3>
-                        <p className="text-sm text-muted-foreground">
+                    <div key={index} className="border rounded-lg p-4">
+                      <h3 className="font-medium mb-2">{section.name}</h3>
+                      <div className="space-y-2">
+                        <div className="flex justify-between">
+                          <span className="text-sm text-muted-foreground">Progress</span>
+                          <span className="text-sm font-medium">{section.progress}%</span>
+                        </div>
+                        <Progress value={section.progress} className="h-2" />
+                        <p className="text-xs text-muted-foreground">
                           {section.features.filter((f) => f.status === "completed").length} of {section.features.length}{" "}
-                          completed
+                          features completed
                         </p>
                       </div>
                     </div>
@@ -113,15 +133,27 @@ export function ProgressModal({ open, onOpenChange }: ProgressModalProps) {
                 </div>
               </TabsContent>
 
-              <TabsContent value="sections" className="space-y-4">
+              <TabsContent value="sections" className="space-y-4 pt-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {sectionProgress.map((section, index) => (
-                    <SectionCard
+                    <button
                       key={index}
-                      section={section}
-                      progress={section.progress}
+                      className="border rounded-lg p-4 text-left hover:border-primary transition-colors"
                       onClick={() => handleSectionClick(section.name)}
-                    />
+                    >
+                      <h3 className="font-medium mb-2">{section.name}</h3>
+                      <div className="space-y-2">
+                        <div className="flex justify-between">
+                          <span className="text-sm text-muted-foreground">Progress</span>
+                          <span className="text-sm font-medium">{section.progress}%</span>
+                        </div>
+                        <Progress value={section.progress} className="h-2" />
+                        <p className="text-xs text-muted-foreground">
+                          {section.features.filter((f) => f.status === "completed").length} of {section.features.length}{" "}
+                          features completed
+                        </p>
+                      </div>
+                    </button>
                   ))}
                 </div>
               </TabsContent>
@@ -130,5 +162,23 @@ export function ProgressModal({ open, onOpenChange }: ProgressModalProps) {
         )}
       </DialogContent>
     </Dialog>
+  )
+}
+
+function StatusBadge({ status }: { status: string }) {
+  let bgColor = "bg-gray-100 text-gray-800"
+
+  if (status === "completed") {
+    bgColor = "bg-green-100 text-green-800"
+  } else if (status === "in-progress") {
+    bgColor = "bg-blue-100 text-blue-800"
+  } else if (status === "not-started") {
+    bgColor = "bg-gray-100 text-gray-800"
+  }
+
+  return (
+    <span className={`px-2 py-1 rounded-full text-xs font-medium ${bgColor}`}>
+      {status === "in-progress" ? "In Progress" : status === "not-started" ? "Not Started" : "Completed"}
+    </span>
   )
 }
