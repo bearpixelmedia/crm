@@ -1,162 +1,206 @@
 "use client"
+
+import { useState } from "react"
+import { useRouter } from "next/navigation"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useForm } from "react-hook-form"
+import * as z from "zod"
 import { Button } from "@/components/ui/button"
-import { Calendar } from "@/components/ui/calendar"
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Calendar } from "@/components/ui/calendar"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { CalendarIcon } from "lucide-react"
-import { cn } from "@/lib/utils"
 import { format } from "date-fns"
-import { useForm } from "react-hook-form"
-import { z } from "zod"
-import { zodResolver } from "@hookform/resolvers/zod"
+import { cn } from "@/lib/utils"
+import { toast } from "@/components/ui/use-toast"
 
-const formSchema = z.object({
+const projectFormSchema = z.object({
   name: z.string().min(2, {
     message: "Project name must be at least 2 characters.",
   }),
   clientId: z.string({
     required_error: "Please select a client.",
   }),
-  type: z.string({
+  type: z.enum(["web-design", "seo", "marketing", "development", "consulting"], {
     required_error: "Please select a project type.",
   }),
-  description: z.string().optional(),
+  status: z.enum(["planning", "in-progress", "on-hold", "completed", "cancelled"], {
+    required_error: "Please select a project status.",
+  }),
   startDate: z.date({
-    required_error: "A start date is required.",
+    required_error: "Please select a start date.",
   }),
   deadline: z.date({
-    required_error: "A deadline is required.",
+    required_error: "Please select a deadline.",
   }),
   budget: z.string().min(1, {
-    message: "Please enter a budget amount.",
+    message: "Please enter a project budget.",
   }),
+  description: z.string().optional(),
 })
 
-// Sample client data - in a real app, this would come from your database
-const clients = [
-  { id: "CL001", name: "Acme Corporation" },
-  { id: "CL002", name: "TechNova Solutions" },
-  { id: "CL003", name: "Global Enterprises" },
-  { id: "CL004", name: "Bright Future Inc" },
-  { id: "CL005", name: "Stellar Innovations" },
+type ProjectFormValues = z.infer<typeof projectFormSchema>
+
+// Mock client data - in a real implementation, this would come from your API
+const mockClients = [
+  { id: "client1", name: "Acme Corporation" },
+  { id: "client2", name: "Globex Industries" },
+  { id: "client3", name: "Initech LLC" },
+  { id: "client4", name: "Umbrella Corp" },
+  { id: "client5", name: "Stark Industries" },
 ]
 
-const projectTypes = [
-  { id: "website", name: "Website Design" },
-  { id: "logo", name: "Logo Design" },
-  { id: "branding", name: "Branding" },
-  { id: "seo", name: "SEO Campaign" },
-  { id: "social", name: "Social Media" },
-  { id: "content", name: "Content Marketing" },
-  { id: "ppc", name: "PPC Campaign" },
-]
+export function ProjectForm({ project }: { project?: ProjectFormValues }) {
+  const router = useRouter()
+  const [isLoading, setIsLoading] = useState(false)
 
-export function ProjectForm({ onSubmit, initialData = null }) {
-  const form = useForm({
-    resolver: zodResolver(formSchema),
-    defaultValues: initialData || {
-      name: "",
-      clientId: "",
-      type: "",
-      description: "",
-      budget: "",
-    },
+  // Default values for the form
+  const defaultValues: Partial<ProjectFormValues> = {
+    name: project?.name || "",
+    clientId: project?.clientId || "",
+    type: project?.type || "web-design",
+    status: project?.status || "planning",
+    startDate: project?.startDate || new Date(),
+    deadline: project?.deadline || new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days from now
+    budget: project?.budget || "",
+    description: project?.description || "",
+  }
+
+  const form = useForm<ProjectFormValues>({
+    resolver: zodResolver(projectFormSchema),
+    defaultValues,
   })
+
+  async function onSubmit(data: ProjectFormValues) {
+    setIsLoading(true)
+
+    try {
+      // In a real implementation, this would send data to your API
+      // For now, we'll just simulate a successful submission
+      await new Promise((resolve) => setTimeout(resolve, 1000))
+
+      toast({
+        title: "Project saved",
+        description: `${data.name} has been ${project ? "updated" : "created"} successfully.`,
+      })
+
+      router.push("/projects")
+    } catch (error) {
+      toast({
+        title: "Something went wrong.",
+        description: "Your project was not saved. Please try again.",
+        variant: "destructive",
+      })
+    } finally {
+      setIsLoading(false)
+    }
+  }
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-        <FormField
-          control={form.control}
-          name="name"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Project Name</FormLabel>
-              <FormControl>
-                <Input placeholder="Enter project name" {...field} />
-              </FormControl>
-              <FormDescription>The name of your project.</FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="clientId"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Client</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+          <FormField
+            control={form.control}
+            name="name"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Project Name</FormLabel>
                 <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select a client" />
-                  </SelectTrigger>
+                  <Input placeholder="Website Redesign" {...field} />
                 </FormControl>
-                <SelectContent>
-                  {clients.map((client) => (
-                    <SelectItem key={client.id} value={client.id}>
-                      {client.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <FormDescription>The client this project is for.</FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+                <FormDescription>A descriptive name for this project.</FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-        <FormField
-          control={form.control}
-          name="type"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Project Type</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select project type" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  {projectTypes.map((type) => (
-                    <SelectItem key={type.id} value={type.id}>
-                      {type.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <FormDescription>The type of project.</FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+          <FormField
+            control={form.control}
+            name="clientId"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Client</FormLabel>
+                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select a client" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {mockClients.map((client) => (
+                      <SelectItem key={client.id} value={client.id}>
+                        {client.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FormDescription>The client this project is for.</FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-        <FormField
-          control={form.control}
-          name="description"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Description</FormLabel>
-              <FormControl>
-                <Textarea placeholder="Project description..." className="min-h-[120px]" {...field} />
-              </FormControl>
-              <FormDescription>A brief description of the project scope and goals.</FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+          <FormField
+            control={form.control}
+            name="type"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Project Type</FormLabel>
+                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select a type" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectItem value="web-design">Web Design</SelectItem>
+                    <SelectItem value="seo">SEO</SelectItem>
+                    <SelectItem value="marketing">Marketing</SelectItem>
+                    <SelectItem value="development">Development</SelectItem>
+                    <SelectItem value="consulting">Consulting</SelectItem>
+                  </SelectContent>
+                </Select>
+                <FormDescription>The type of work involved in this project.</FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-        <div className="flex flex-col space-y-6 md:flex-row md:space-x-4 md:space-y-0">
+          <FormField
+            control={form.control}
+            name="status"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Status</FormLabel>
+                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select a status" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectItem value="planning">Planning</SelectItem>
+                    <SelectItem value="in-progress">In Progress</SelectItem>
+                    <SelectItem value="on-hold">On Hold</SelectItem>
+                    <SelectItem value="completed">Completed</SelectItem>
+                    <SelectItem value="cancelled">Cancelled</SelectItem>
+                  </SelectContent>
+                </Select>
+                <FormDescription>The current status of this project.</FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
           <FormField
             control={form.control}
             name="startDate"
             render={({ field }) => (
-              <FormItem className="flex flex-1 flex-col">
+              <FormItem className="flex flex-col">
                 <FormLabel>Start Date</FormLabel>
                 <Popover>
                   <PopoverTrigger asChild>
@@ -174,6 +218,7 @@ export function ProjectForm({ onSubmit, initialData = null }) {
                     <Calendar mode="single" selected={field.value} onSelect={field.onChange} initialFocus />
                   </PopoverContent>
                 </Popover>
+                <FormDescription>When work on this project will begin.</FormDescription>
                 <FormMessage />
               </FormItem>
             )}
@@ -183,7 +228,7 @@ export function ProjectForm({ onSubmit, initialData = null }) {
             control={form.control}
             name="deadline"
             render={({ field }) => (
-              <FormItem className="flex flex-1 flex-col">
+              <FormItem className="flex flex-col">
                 <FormLabel>Deadline</FormLabel>
                 <Popover>
                   <PopoverTrigger asChild>
@@ -201,6 +246,22 @@ export function ProjectForm({ onSubmit, initialData = null }) {
                     <Calendar mode="single" selected={field.value} onSelect={field.onChange} initialFocus />
                   </PopoverContent>
                 </Popover>
+                <FormDescription>When this project needs to be completed by.</FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="budget"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Budget ($)</FormLabel>
+                <FormControl>
+                  <Input placeholder="5000" {...field} />
+                </FormControl>
+                <FormDescription>The total budget allocated for this project.</FormDescription>
                 <FormMessage />
               </FormItem>
             )}
@@ -209,24 +270,52 @@ export function ProjectForm({ onSubmit, initialData = null }) {
 
         <FormField
           control={form.control}
-          name="budget"
+          name="description"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Budget</FormLabel>
+              <FormLabel>Description</FormLabel>
               <FormControl>
-                <Input placeholder="$0.00" {...field} />
+                <Textarea
+                  placeholder="Detailed description of the project scope and requirements..."
+                  className="min-h-32"
+                  {...field}
+                />
               </FormControl>
-              <FormDescription>The total budget for this project.</FormDescription>
+              <FormDescription>A detailed description of the project scope and requirements.</FormDescription>
               <FormMessage />
             </FormItem>
           )}
         />
 
         <div className="flex justify-end space-x-4">
-          <Button type="button" variant="outline">
+          <Button variant="outline" onClick={() => router.push("/projects")} disabled={isLoading}>
             Cancel
           </Button>
-          <Button type="submit">Save Project</Button>
+          <Button type="submit" disabled={isLoading}>
+            {isLoading ? (
+              <>
+                <svg
+                  className="mr-2 h-4 w-4 animate-spin"
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d="M21 12a9 9 0 1 1-6.219-8.56" />
+                </svg>
+                Saving...
+              </>
+            ) : project ? (
+              "Update Project"
+            ) : (
+              "Create Project"
+            )}
+          </Button>
         </div>
       </form>
     </Form>
