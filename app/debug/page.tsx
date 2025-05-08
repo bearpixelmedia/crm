@@ -1,32 +1,33 @@
-import { MainNav } from "@/components/main-nav"
-import { UserNav } from "@/components/user-nav"
 import { DebugConnection } from "@/components/debug-connection"
-import { EnvDebug } from "@/components/env-debug"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { getEnvironmentName } from "@/lib/environment"
 
 export default function DebugPage() {
   return (
-    <div className="flex min-h-screen flex-col">
-      <div className="border-b">
-        <div className="flex h-16 items-center px-4">
-          <MainNav className="mx-6" />
-          <div className="ml-auto flex items-center space-x-4">
-            <UserNav />
-          </div>
-        </div>
-      </div>
-      <div className="flex-1 space-y-4 p-8 pt-6">
-        <div className="flex items-center justify-between space-y-2">
-          <h2 className="text-3xl font-bold tracking-tight">Debug Tools</h2>
-        </div>
+    <div className="container mx-auto py-10">
+      <h1 className="text-3xl font-bold mb-6">Debug Tools</h1>
 
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          <div className="col-span-2 lg:col-span-1">
-            <EnvDebug />
-          </div>
-          <div className="col-span-2 lg:col-span-1">
-            <DebugConnection />
-          </div>
-        </div>
+      <div className="grid gap-6 md:grid-cols-2">
+        <Card>
+          <CardHeader>
+            <CardTitle>Environment Information</CardTitle>
+            <CardDescription>Current environment and configuration details</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-2">
+              <div className="flex justify-between">
+                <span className="font-medium">Environment:</span>
+                <span>{getEnvironmentName()}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="font-medium">NEXT_PUBLIC_VERCEL_ENV:</span>
+                <span>{process.env.NEXT_PUBLIC_VERCEL_ENV || "Not set"}</span>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <DebugConnection />
       </div>
     </div>
   )

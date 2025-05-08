@@ -2,7 +2,6 @@
 
 import type React from "react"
 import { createContext, useContext, useState, useEffect } from "react"
-import { fetchClientData, fetchProjectData, fetchAgentData } from "@/lib/google-sheets"
 import { getMockData } from "@/lib/mock-data"
 import { shouldUseMockData } from "@/lib/environment"
 
@@ -57,7 +56,7 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
   const [error, setError] = useState<string | null>(null)
   const [usingMockData, setUsingMockData] = useState(false)
 
-  // Update the loadData function to handle different environments
+  // Update the loadData function to use the API route
   const loadData = async () => {
     setIsLoading(true)
     setError(null)
@@ -67,7 +66,7 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
 
     if (useMock) {
       // Use mock data
-      console.log("Using mock data due to missing environment variables or preview environment")
+      console.log("Using mock data due to environment settings")
       const mockData = getMockData()
       setClients(mockData.clients)
       setProjects(mockData.projects)
@@ -78,35 +77,29 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
     }
 
     try {
-      // Fetch all data in parallel from Google Sheets
-      const [clientData, projectData, agentData] = await Promise.all([
-        fetchClientData().catch((err) => {
-          console.error("Error fetching client data:", err)
-          throw err
-        }),
-        fetchProjectData().catch((err) => {
-          console.error("Error fetching project data:", err)
-          throw err
-        }),
-        fetchAgentData().catch((err) => {
-          console.error("Error fetching agent data:", err)
-          throw err
-        }),
-      ])
+      // Fetch data from our API route
+      const response = await fetch("/api/google-sheets?type=all")
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.error || "Failed to fetch data from API")
+      }
+
+      const data = await response.json()
 
       // Process the data to establish relationships
-      const clientsWithProjects = clientData.map((client) => ({
+      const clientsWithProjects = data.clients.map((client: Client) => ({
         ...client,
-        projects: projectData.filter((project) => project.clientId === client.id),
+        projects: data.projects.filter((project: Project) => project.clientId === client.id),
       }))
 
       setClients(clientsWithProjects)
-      setProjects(projectData)
-      setAgents(agentData)
+      setProjects(data.projects)
+      setAgents(data.agents)
       setUsingMockData(false)
     } catch (err) {
-      console.error("Error loading data from Google Sheets:", err)
-      setError("Failed to load data from Google Sheets. Using fallback data instead.")
+      console.error("Error loading data from API:", err)
+      setError("Failed to load data from API. Using fallback data instead.")
 
       // Fall back to mock data on error
       const mockData = getMockData()
