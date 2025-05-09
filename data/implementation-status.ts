@@ -1,301 +1,255 @@
-export type FeatureStatus = "not-started" | "in-progress" | "completed"
+export type FeatureStatus = "completed" | "in-progress" | "not-started"
 
 export interface Feature {
+  id: string
   name: string
+  description: string
   status: FeatureStatus
   completion: number
   notes?: string
-  priority?: "low" | "medium" | "high"
 }
 
 export interface Section {
+  id: string
   name: string
   features: Feature[]
 }
 
-export interface ImplementationData {
-  sections: Section[]
-}
-
-export const implementationData: ImplementationData = {
+export const implementationData: { sections: Section[] } = {
   sections: [
     {
-      name: "Dashboard / Overview",
+      id: "core",
+      name: "Core CRM Features",
       features: [
         {
-          name: "Real-time KPI Cards",
+          id: "dashboard",
+          name: "Dashboard",
+          description: "Main dashboard with overview of clients, projects, and tasks",
           status: "completed",
           completion: 100,
-          notes: "All KPI cards implemented with real-time data",
         },
         {
-          name: "Overview Charts",
-          status: "in-progress",
-          completion: 60,
-          notes: "Basic charts implemented, need to add interactivity",
-          priority: "medium",
-        },
-        {
-          name: "Recent Activity Feed",
-          status: "in-progress",
-          completion: 40,
-          notes: "Basic feed structure created, need to connect to real data",
-          priority: "low",
-        },
-        {
-          name: "Quick Actions",
-          status: "not-started",
-          completion: 0,
-          priority: "high",
-        },
-      ],
-    },
-    {
-      name: "Clients Section",
-      features: [
-        {
-          name: "Client List View",
+          id: "client-management",
+          name: "Client Management",
+          description: "Add, edit, and manage client information",
           status: "completed",
           completion: 100,
-          notes: "Fully implemented with sorting and filtering",
         },
         {
-          name: "Client Detail View",
+          id: "project-tracking",
+          name: "Project Tracking",
+          description: "Track project status, deadlines, and details",
+          status: "completed",
+          completion: 100,
+        },
+        {
+          id: "task-management",
+          name: "Task Management",
+          description: "Create and assign tasks with due dates",
+          status: "completed",
+          completion: 100,
+        },
+        {
+          id: "user-management",
+          name: "User Management",
+          description: "Manage team members and permissions",
           status: "in-progress",
           completion: 75,
-          notes: "Basic details implemented, need to add communication history",
-          priority: "high",
         },
         {
-          name: "Client Creation/Editing",
-          status: "in-progress",
-          completion: 50,
-          notes: "Form created, need to implement validation and submission",
-          priority: "medium",
-        },
-        {
-          name: "Client Analytics",
-          status: "not-started",
-          completion: 0,
-          priority: "low",
+          id: "authentication",
+          name: "Authentication",
+          description: "Secure login and user authentication",
+          status: "completed",
+          completion: 100,
         },
       ],
     },
     {
-      name: "Projects Section",
+      id: "seo",
+      name: "SEO Services",
       features: [
         {
-          name: "Project List View",
-          status: "completed",
-          completion: 100,
-          notes: "Fully implemented with sorting and filtering",
-        },
-        {
-          name: "Project Detail View",
-          status: "in-progress",
-          completion: 80,
-          notes: "Most details implemented, need to add timeline view",
-          priority: "medium",
-        },
-        {
-          name: "Project Creation/Editing",
-          status: "in-progress",
-          completion: 30,
-          notes: "Basic form created, need to add team assignment",
-          priority: "high",
-        },
-        {
-          name: "Task Management",
-          status: "not-started",
-          completion: 0,
-          priority: "medium",
-        },
-      ],
-    },
-    {
-      name: "SEO Section",
-      features: [
-        {
-          name: "SEO Dashboard",
-          status: "completed",
-          completion: 100,
-          notes: "All metrics and visualizations implemented",
-        },
-        {
-          name: "SEO Workflow Management",
-          status: "completed",
-          completion: 100,
-          notes: "All workflow steps and tracking implemented",
-        },
-        {
-          name: "SEO Task Management",
+          id: "seo-workflow",
+          name: "SEO Workflow",
+          description: "Structured workflow for SEO services",
           status: "in-progress",
           completion: 60,
-          notes: "Basic task tracking implemented, need to add assignments",
-          priority: "high",
         },
         {
+          id: "seo-dashboard",
+          name: "SEO Dashboard",
+          description: "Client-facing SEO performance dashboard",
+          status: "in-progress",
+          completion: 80,
+        },
+        {
+          id: "seo-tasks",
+          name: "SEO Task Management",
+          description: "Specialized task management for SEO activities",
+          status: "not-started",
+          completion: 0,
+        },
+        {
+          id: "competitor-analysis",
           name: "Competitor Analysis",
-          status: "in-progress",
-          completion: 70,
-          notes: "Basic analysis implemented, need to add comparison features",
-          priority: "medium",
-        },
-        {
-          name: "SEO Reporting",
+          description: "Track and analyze competitor SEO performance",
           status: "not-started",
           completion: 0,
-          priority: "low",
+        },
+        {
+          id: "seo-scheduling",
+          name: "SEO Scheduling",
+          description: "Schedule and assign SEO tasks to team members",
+          status: "not-started",
+          completion: 0,
         },
       ],
     },
     {
-      name: "Marketing Section",
+      id: "marketing",
+      name: "Marketing Features",
       features: [
         {
-          name: "Campaign Management",
+          id: "campaign-tracking",
+          name: "Campaign Tracking",
+          description: "Track marketing campaign performance",
           status: "not-started",
           completion: 0,
-          priority: "medium",
         },
         {
-          name: "Content Calendar",
+          id: "analytics-integration",
+          name: "Analytics Integration",
+          description: "Integration with analytics platforms",
           status: "not-started",
           completion: 0,
-          priority: "low",
         },
         {
-          name: "Social Media Management",
+          id: "client-analytics",
+          name: "Client Analytics",
+          description: "Detailed analytics for each client",
           status: "not-started",
           completion: 0,
-          priority: "low",
-        },
-        {
-          name: "Email Marketing",
-          status: "not-started",
-          completion: 0,
-          priority: "medium",
         },
       ],
     },
     {
-      name: "Agent/Team Management",
+      id: "scheduling",
+      name: "Scheduling System",
       features: [
         {
-          name: "Agent Directory",
-          status: "in-progress",
-          completion: 50,
-          notes: "Basic directory implemented, need to add profiles",
-          priority: "medium",
-        },
-        {
-          name: "Workload Management",
-          status: "in-progress",
-          completion: 40,
-          notes: "Basic workload tracking implemented, need to add capacity planning",
-          priority: "high",
-        },
-        {
-          name: "Schedule Management",
-          status: "not-started",
-          completion: 0,
-          priority: "medium",
-        },
-        {
-          name: "Performance Tracking",
-          status: "not-started",
-          completion: 0,
-          priority: "low",
-        },
-      ],
-    },
-    {
-      name: "Google Sheets Integration",
-      features: [
-        {
-          name: "Read Operations",
+          id: "calendar",
+          name: "Calendar Integration",
+          description: "Integrated calendar for scheduling",
           status: "completed",
           completion: 100,
-          notes: "Fully implemented with error handling",
         },
         {
-          name: "Write Operations",
-          status: "not-started",
-          completion: 0,
-          priority: "high",
-        },
-        {
-          name: "Data Synchronization",
+          id: "resource-allocation",
+          name: "Resource Allocation",
+          description: "Allocate team members to projects and tasks",
           status: "in-progress",
           completion: 50,
-          notes: "Basic sync implemented, need to add conflict resolution",
-          priority: "medium",
-        },
-        {
-          name: "Error Handling",
-          status: "in-progress",
-          completion: 30,
-          notes: "Basic error handling implemented, need to add retry logic",
-          priority: "high",
         },
       ],
     },
     {
-      name: "Authentication & Security",
+      id: "data-integration",
+      name: "Data Integration",
       features: [
         {
-          name: "User Authentication",
-          status: "not-started",
-          completion: 0,
-          priority: "high",
-        },
-        {
-          name: "Role-based Access Control",
-          status: "not-started",
-          completion: 0,
-          priority: "medium",
-        },
-        {
-          name: "Security Auditing",
-          status: "not-started",
-          completion: 0,
-          priority: "low",
-        },
-      ],
-    },
-    {
-      name: "Client Portal",
-      features: [
-        {
-          name: "Client Dashboard",
-          status: "in-progress",
-          completion: 30,
-          notes: "Basic dashboard structure created, need to add content",
-          priority: "medium",
-        },
-        {
-          name: "SEO Performance Dashboard",
+          id: "google-sheets",
+          name: "Google Sheets Integration",
+          description: "Import and export data with Google Sheets",
           status: "completed",
           completion: 100,
-          notes: "All metrics and visualizations implemented",
         },
         {
-          name: "Project Tracking",
+          id: "data-import",
+          name: "Data Import/Export",
+          description: "Import and export data in various formats",
           status: "not-started",
           completion: 0,
-          priority: "high",
+        },
+      ],
+    },
+    {
+      id: "financial",
+      name: "Financial Management",
+      features: [
+        {
+          id: "invoicing",
+          name: "Invoicing System",
+          description: "Create, send, and track invoices",
+          status: "not-started",
+          completion: 0,
         },
         {
-          name: "Document Management",
+          id: "payment-tracking",
+          name: "Payment Tracking",
+          description: "Track client payments and outstanding balances",
           status: "not-started",
           completion: 0,
-          priority: "low",
+        },
+      ],
+    },
+    {
+      id: "document",
+      name: "Document Management",
+      features: [
+        {
+          id: "file-storage",
+          name: "File Storage",
+          description: "Store and organize client and project files",
+          status: "completed",
+          completion: 100,
         },
         {
-          name: "Communication Center",
+          id: "document-sharing",
+          name: "Document Sharing",
+          description: "Share documents with clients and team members",
           status: "not-started",
           completion: 0,
-          priority: "medium",
+        },
+      ],
+    },
+    {
+      id: "reporting",
+      name: "Reporting",
+      features: [
+        {
+          id: "automated-reports",
+          name: "Automated Reporting",
+          description: "Generate automated reports for clients and projects",
+          status: "in-progress",
+          completion: 60,
+        },
+        {
+          id: "custom-reports",
+          name: "Custom Reports",
+          description: "Create custom reports based on specific metrics",
+          status: "not-started",
+          completion: 0,
+        },
+      ],
+    },
+    {
+      id: "communication",
+      name: "Communication",
+      features: [
+        {
+          id: "notifications",
+          name: "Notification System",
+          description: "In-app and email notifications for important events",
+          status: "completed",
+          completion: 100,
+        },
+        {
+          id: "client-portal",
+          name: "Client Portal",
+          description: "Secure portal for clients to view their projects and reports",
+          status: "completed",
+          completion: 100,
         },
       ],
     },

@@ -10,53 +10,73 @@ import { cn } from "@/lib/utils"
 export function MainNav({ className, ...props }: React.HTMLAttributes<HTMLElement>) {
   const pathname = usePathname()
 
+  const routes = [
+    {
+      href: "/",
+      label: "Dashboard",
+      active: pathname === "/",
+    },
+    {
+      href: "/clients",
+      label: "Clients",
+      active: pathname === "/clients" || pathname.startsWith("/clients/"),
+    },
+    {
+      href: "/projects",
+      label: "Projects",
+      active: pathname === "/projects" || pathname.startsWith("/projects/"),
+    },
+    {
+      href: "/tasks",
+      label: "Tasks",
+      active: pathname === "/tasks",
+    },
+    {
+      href: "/invoices",
+      label: "Invoices",
+      active: pathname === "/invoices" || pathname.startsWith("/invoices/"),
+    },
+    {
+      href: "/files",
+      label: "Files",
+      active: pathname === "/files" || pathname.startsWith("/files/"),
+    },
+    {
+      href: "/reports",
+      label: "Reports",
+      active: pathname === "/reports" || pathname.startsWith("/reports/"),
+    },
+    {
+      href: "/schedule",
+      label: "Schedule",
+      active: pathname === "/schedule",
+    },
+    {
+      href: "/marketing",
+      label: "Marketing",
+      active: pathname === "/marketing",
+    },
+    {
+      href: "/seo",
+      label: "SEO",
+      active: pathname === "/seo" || pathname.startsWith("/seo/"),
+    },
+  ]
+
   return (
     <nav className={cn("flex items-center space-x-4 lg:space-x-6", className)} {...props}>
-      <Link
-        href="/"
-        className={cn(
-          "text-sm font-medium transition-colors hover:text-primary",
-          pathname === "/" ? "text-primary" : "text-muted-foreground",
-        )}
-      >
-        Dashboard
-      </Link>
-      <Link
-        href="/clients"
-        className={cn(
-          "text-sm font-medium transition-colors hover:text-primary",
-          pathname === "/clients" || pathname.startsWith("/clients/") ? "text-primary" : "text-muted-foreground",
-        )}
-      >
-        Clients
-      </Link>
-      <Link
-        href="/projects"
-        className={cn(
-          "text-sm font-medium transition-colors hover:text-primary",
-          pathname === "/projects" || pathname.startsWith("/projects/") ? "text-primary" : "text-muted-foreground",
-        )}
-      >
-        Projects
-      </Link>
-      <Link
-        href="/seo"
-        className={cn(
-          "text-sm font-medium transition-colors hover:text-primary",
-          pathname === "/seo" || pathname.startsWith("/seo/") ? "text-primary" : "text-muted-foreground",
-        )}
-      >
-        SEO
-      </Link>
-      <Link
-        href="/marketing"
-        className={cn(
-          "text-sm font-medium transition-colors hover:text-primary",
-          pathname === "/marketing" || pathname.startsWith("/marketing/") ? "text-primary" : "text-muted-foreground",
-        )}
-      >
-        Marketing
-      </Link>
+      {routes.map((route) => (
+        <Link
+          key={route.href}
+          href={route.href}
+          className={cn(
+            "text-sm font-medium transition-colors hover:text-primary",
+            route.active ? "text-primary" : "text-muted-foreground",
+          )}
+        >
+          {route.label}
+        </Link>
+      ))}
     </nav>
   )
 }

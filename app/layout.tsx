@@ -4,6 +4,7 @@ import { Inter } from "next/font/google"
 import { ThemeProvider } from "@/components/theme-provider"
 import { DataProvider } from "@/context/data-context"
 import { ProgressProvider } from "@/context/progress-context"
+import { AuthProvider } from "@/context/auth-context"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -22,9 +23,11 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
-          <DataProvider>
-            <ProgressProvider>{children}</ProgressProvider>
-          </DataProvider>
+          <AuthProvider>
+            <DataProvider>
+              <ProgressProvider>{children}</ProgressProvider>
+            </DataProvider>
+          </AuthProvider>
         </ThemeProvider>
       </body>
     </html>
