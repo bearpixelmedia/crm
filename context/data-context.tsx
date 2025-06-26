@@ -21,10 +21,12 @@ export type Project = {
   id: string
   name: string
   clientId: string
-  type: string
-  status: string
+  type: "Website Build" | "Maintenance" | "SEO" | "Marketing" | "A la carte" | "Other"
+  status: "In Progress" | "Completed" | "Ongoing" | "Canceled" | "Not Started"
   startDate: string
   deadline: string
+  description?: string
+  budget?: string
 }
 
 export type Agent = {
@@ -34,12 +36,28 @@ export type Agent = {
   phone: string
   specialties: string[]
   capacity: number
+  currentWorkload?: number
+}
+
+export type Task = {
+  id: string
+  title: string
+  description: string
+  projectId: string
+  assignedAgentId: string
+  status: "To Do" | "In Progress" | "Review" | "Completed" | "Blocked"
+  priority: "Low" | "Medium" | "High" | "Critical"
+  dueDate: string
+  estimatedHours?: number
+  actualHours?: number
+  createdDate: string
 }
 
 type DataContextType = {
   clients: Client[]
   projects: Project[]
   agents: Agent[]
+  tasks: Task[]
   isLoading: boolean
   error: string | null
   refreshData: () => Promise<void>
@@ -52,6 +70,7 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
   const [clients, setClients] = useState<Client[]>([])
   const [projects, setProjects] = useState<Project[]>([])
   const [agents, setAgents] = useState<Agent[]>([])
+  const [tasks, setTasks] = useState<Task[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [usingMockData, setUsingMockData] = useState(false)
@@ -71,6 +90,7 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
       setClients(mockData.clients)
       setProjects(mockData.projects)
       setAgents(mockData.agents)
+      setTasks(mockData.tasks || [])
       setUsingMockData(true)
       setIsLoading(false)
       return
@@ -96,6 +116,7 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
       setClients(clientsWithProjects)
       setProjects(data.projects)
       setAgents(data.agents)
+      setTasks(data.tasks || [])
       setUsingMockData(false)
     } catch (err) {
       console.error("Error loading data from API:", err)
@@ -106,6 +127,7 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
       setClients(mockData.clients)
       setProjects(mockData.projects)
       setAgents(mockData.agents)
+      setTasks(mockData.tasks || [])
       setUsingMockData(true)
     } finally {
       setIsLoading(false)
@@ -127,6 +149,7 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
         clients,
         projects,
         agents,
+        tasks,
         isLoading,
         error,
         refreshData,

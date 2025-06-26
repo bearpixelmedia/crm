@@ -2,7 +2,7 @@
 
 import type React from "react"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useMemo } from "react"
 import { useRouter } from "next/navigation"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -37,74 +37,19 @@ export function ReportBuilder({ report, isNew = false }: ReportBuilderProps) {
   const router = useRouter()
   const { clients, projects } = useData()
 
-  // Mock templates
-  const templates: ReportTemplate[] = [
-    {
-      id: "template1",
-      name: "SEO Performance Report",
-      type: "seo",
-      description: "Comprehensive overview of SEO performance metrics",
-      sections: [
-        {
-          id: "section1",
-          title: "Executive Summary",
-          type: "text",
-          content: "This report provides an overview of SEO performance for the period.",
-        },
-        {
-          id: "section2",
-          title: "Keyword Rankings",
-          type: "table",
-          dataSource: "seo.keywords",
-        },
-        {
-          id: "section3",
-          title: "Organic Traffic",
-          type: "chart",
-          dataSource: "analytics.traffic",
-          options: { chartType: "line" },
-        },
-        {
-          id: "section4",
-          title: "Conversion Metrics",
-          type: "metric",
-          dataSource: "analytics.conversions",
-        },
-      ],
-    },
-    {
-      id: "template2",
-      name: "Client Performance Summary",
-      type: "client",
-      description: "Overview of client performance across projects",
-      sections: [
-        {
-          id: "section1",
-          title: "Project Status Summary",
-          type: "table",
-          dataSource: "projects.status",
-        },
-        {
-          id: "section2",
-          title: "Revenue Overview",
-          type: "chart",
-          dataSource: "finance.revenue",
-          options: { chartType: "bar" },
-        },
-      ],
-    },
-  ]
+  // YOLO hydration fix: memoize default report values
+  const defaultReportId = useMemo(() => `report-${Math.floor(Math.random() * 1e8).toString(36)}`, [])
+  const defaultCreatedAt = useMemo(() => new Date().toISOString(), [])
 
   const [reportData, setReportData] = useState<Partial<Report>>(() => {
     if (report) return { ...report }
-
     // Default new report
     return {
-      id: `report-${Date.now()}`,
+      id: defaultReportId,
       name: "",
       type: "seo" as ReportType,
       description: "",
-      createdAt: new Date().toISOString(),
+      createdAt: defaultCreatedAt,
       createdBy: "Current User", // Would use actual user in real app
       frequency: "monthly" as ReportFrequency,
       status: "draft",
@@ -117,6 +62,11 @@ export function ReportBuilder({ report, isNew = false }: ReportBuilderProps) {
   const [sections, setSections] = useState<ReportSection[]>([])
   const [clientProjects, setClientProjects] = useState<any[]>([])
   const [recipientEmail, setRecipientEmail] = useState("")
+
+  // Helper for section IDs
+  function generateSectionId() {
+    return `section-${Math.floor(Math.random() * 1e8).toString(36)}`
+  }
 
   // Update available projects when client changes
   useEffect(() => {
@@ -167,12 +117,11 @@ export function ReportBuilder({ report, isNew = false }: ReportBuilderProps) {
 
   const addSection = () => {
     const newSection: ReportSection = {
-      id: `section-${Date.now()}`,
+      id: generateSectionId(),
       title: "New Section",
       type: "text",
       content: "",
     }
-
     setSections([...sections, newSection])
   }
 

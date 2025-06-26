@@ -165,7 +165,7 @@ const generateAgentSchedules = (): AgentSchedule[] => {
   return schedules
 }
 
-const agentSchedules = generateAgentSchedules()
+const agentSchedules = React.useMemo(() => generateAgentSchedules(), [])
 
 export function SEOAgentWorkload() {
   const [currentWeekStart, setCurrentWeekStart] = React.useState(startOfWeek(new Date()))

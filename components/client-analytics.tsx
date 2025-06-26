@@ -15,6 +15,7 @@ import {
   LineChart,
   Line,
 } from "recharts"
+import { useMemo } from "react"
 
 // Mock data for client analytics
 const revenueData = [
@@ -57,6 +58,12 @@ const engagementData = [
 ]
 
 export function ClientAnalytics({ clientId }: { clientId?: string }) {
+  // YOLO hydration fix: memoize random colors for serviceTypeData
+  const serviceTypeColors = useMemo(
+    () => serviceTypeData.map(() => `#${Math.floor(Math.random() * 16777215).toString(16)}`),
+    []
+  )
+
   return (
     <div className="space-y-4">
       <Tabs defaultValue="overview" className="space-y-4">
@@ -230,7 +237,7 @@ export function ClientAnalytics({ clientId }: { clientId?: string }) {
                         label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
                       >
                         {serviceTypeData.map((entry, index) => (
-                          <Cell key={`cell-${index}`} fill={`#${Math.floor(Math.random() * 16777215).toString(16)}`} />
+                          <Cell key={`cell-${index}`} fill={serviceTypeColors[index]} />
                         ))}
                       </Pie>
                       <Tooltip />

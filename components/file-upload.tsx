@@ -46,12 +46,16 @@ export function FileUpload({ clientId, projectId, onComplete }: FileUploadProps)
   // Get client-specific projects
   const clientProjects = selectedClient ? projects.filter((project) => project.clientId === selectedClient) : []
 
+  function generateUploadId() {
+    return `upload-${Math.floor(Math.random() * 1e8).toString(36)}`
+  }
+
   // Handle file selection
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files?.length) return
 
     const newFiles: UploadingFile[] = Array.from(e.target.files).map((file) => ({
-      id: `upload-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`,
+      id: generateUploadId(),
       file,
       progress: 0,
       preview: file.type.startsWith("image/") ? URL.createObjectURL(file) : undefined,

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useMemo } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -51,6 +51,16 @@ const project = {
 export default function ProjectDetailPage({ params }) {
   const router = useRouter()
   const [activeTab, setActiveTab] = useState("overview")
+
+  // YOLO hydration fix: memoize all date calculations
+  const today = useMemo(() => new Date(), [])
+  const deadlineDate = useMemo(() => new Date(project.deadline), [])
+  const startDate = useMemo(() => new Date(project.startDate), [])
+  const daysRemaining = useMemo(() => Math.round((deadlineDate - today) / (1000 * 60 * 60 * 24)), [deadlineDate, today])
+  const timelineStart = useMemo(() => startDate.toLocaleDateString("en-US", { month: "short", day: "numeric" }), [startDate])
+  const timelineEnd = useMemo(() => deadlineDate.toLocaleDateString("en-US", { month: "short", day: "numeric" }), [deadlineDate])
+  const daysTotal = useMemo(() => Math.round((deadlineDate - startDate) / (1000 * 60 * 60 * 24)), [deadlineDate, startDate])
+  const taskDueDates = useMemo(() => project.tasks.map(task => new Date(task.dueDate).toLocaleDateString()), [project.tasks])
 
   const handleBack = () => {
     router.push("/projects")
@@ -112,7 +122,7 @@ export default function ProjectDetailPage({ params }) {
                     <Progress value={project.progress} className="h-2 w-[60px]" />
                   </div>
                   <p className="text-xs text-muted-foreground">
-                    {Math.round((new Date(project.deadline) - new Date()) / (1000 * 60 * 60 * 24))} days remaining
+                    {daysRemaining} days remaining
                   </p>
                 </CardContent>
               </Card>
@@ -141,12 +151,10 @@ export default function ProjectDetailPage({ params }) {
                 </CardHeader>
                 <CardContent>
                   <div className="text-2xl font-bold">
-                    {new Date(project.startDate).toLocaleDateString("en-US", { month: "short", day: "numeric" })} -{" "}
-                    {new Date(project.deadline).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+                    {timelineStart} - {timelineEnd}
                   </div>
                   <p className="text-xs text-muted-foreground">
-                    {Math.round((new Date(project.deadline) - new Date(project.startDate)) / (1000 * 60 * 60 * 24))}{" "}
-                    days total
+                    {daysTotal} days total
                   </p>
                 </CardContent>
               </Card>
@@ -235,7 +243,7 @@ export default function ProjectDetailPage({ params }) {
             <Card>
               <CardContent className="pt-6">
                 <div className="space-y-4">
-                  {project.tasks.map((task) => (
+                  {project.tasks.map((task, i) => (
                     <div key={task.id} className="flex items-center justify-between rounded-lg border p-4">
                       <div className="space-y-1">
                         <div className="flex items-center">
@@ -256,7 +264,7 @@ export default function ProjectDetailPage({ params }) {
                         <div className="flex items-center text-sm text-muted-foreground">
                           <span>Assigned to: {task.assignee}</span>
                           <span className="mx-2">•</span>
-                          <span>Due: {new Date(task.dueDate).toLocaleDateString()}</span>
+                          <span>Due: {taskDueDates[i]}</span>
                         </div>
                       </div>
                       <Button variant="ghost" size="sm">

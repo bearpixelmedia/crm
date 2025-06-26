@@ -2,7 +2,7 @@
 
 import type React from "react"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useMemo } from "react"
 import { useRouter } from "next/navigation"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -23,18 +23,21 @@ export function InvoiceEditor({ invoice, isNew = false }: InvoiceEditorProps) {
   const router = useRouter()
   const { clients, projects } = useData()
 
+  // YOLO hydration fix: memoize default invoice values
+  const defaultInvoiceId = useMemo(() => `INV-${Math.floor(Math.random() * 1000)}`, [])
+  const defaultInvoiceNumber = useMemo(() => `INV-${new Date().getFullYear()}-${Math.floor(Math.random() * 1000).toString().padStart(3, "0")}` , [])
+  const defaultInvoiceDate = useMemo(() => new Date().toISOString().split("T")[0], [])
+  const defaultDueDate = useMemo(() => new Date(Date.now() + 15 * 24 * 60 * 60 * 1000).toISOString().split("T")[0], [])
+
   const [invoiceData, setInvoiceData] = useState<Invoice>(() => {
     if (invoice) return { ...invoice }
-
     // Default new invoice
     return {
-      id: `INV-${Math.floor(Math.random() * 1000)}`,
+      id: defaultInvoiceId,
       clientId: "",
-      number: `INV-${new Date().getFullYear()}-${Math.floor(Math.random() * 1000)
-        .toString()
-        .padStart(3, "0")}`,
-      date: new Date().toISOString().split("T")[0],
-      dueDate: new Date(Date.now() + 15 * 24 * 60 * 60 * 1000).toISOString().split("T")[0],
+      number: defaultInvoiceNumber,
+      date: defaultInvoiceDate,
+      dueDate: defaultDueDate,
       status: "draft" as InvoiceStatus,
       items: [],
       subtotal: 0,
@@ -76,15 +79,19 @@ export function InvoiceEditor({ invoice, isNew = false }: InvoiceEditorProps) {
     setInvoiceData((prev) => ({ ...prev, [name]: value }))
   }
 
+  // Helper for item IDs
+  function generateItemId() {
+    return `item-${Math.floor(Math.random() * 1e8).toString(36)}`
+  }
+
   const addItem = () => {
     const newItem: InvoiceItem = {
-      id: `item-${Date.now()}`,
+      id: generateItemId(),
       description: "",
       quantity: 1,
       rate: 0,
       amount: 0,
     }
-
     setInvoiceData((prev) => ({
       ...prev,
       items: [...prev.items, newItem],

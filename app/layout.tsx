@@ -1,7 +1,6 @@
 import type React from "react"
 import "@/app/globals.css"
 import { Inter } from "next/font/google"
-import { ThemeProvider } from "@/components/theme-provider"
 import { DataProvider } from "@/context/data-context"
 import { ProgressProvider } from "@/context/progress-context"
 import { AuthProvider } from "@/context/auth-context"
@@ -20,15 +19,13 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
-        <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
-          <AuthProvider>
-            <DataProvider>
-              <ProgressProvider>{children}</ProgressProvider>
-            </DataProvider>
-          </AuthProvider>
-        </ThemeProvider>
+        <AuthProvider>
+          <DataProvider>
+            <ProgressProvider>{children}</ProgressProvider>
+          </DataProvider>
+        </AuthProvider>
       </body>
     </html>
   )

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useMemo } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -95,6 +95,9 @@ export function ContentPlanningTable({ projectId }) {
     dueDate: "",
     notes: "",
   })
+
+  // YOLO hydration fix: memoize formatted due dates
+  const formattedDueDates = useMemo(() => contentItems.map(item => new Date(item.dueDate).toLocaleDateString()), [contentItems])
 
   const handleAddOrUpdateItem = () => {
     if (isEditMode) {
@@ -281,7 +284,7 @@ export function ContentPlanningTable({ projectId }) {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {contentItems.map((item) => (
+              {contentItems.map((item, i) => (
                 <TableRow key={item.id}>
                   <TableCell className="font-medium">{item.title}</TableCell>
                   <TableCell>
@@ -325,7 +328,7 @@ export function ContentPlanningTable({ projectId }) {
                     </Badge>
                   </TableCell>
                   <TableCell>{item.assignedTo}</TableCell>
-                  <TableCell>{new Date(item.dueDate).toLocaleDateString()}</TableCell>
+                  <TableCell>{formattedDueDates[i]}</TableCell>
                   <TableCell>
                     <div className="flex space-x-2">
                       <Button variant="ghost" size="icon" onClick={() => handleEditItem(item)}>

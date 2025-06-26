@@ -2,6 +2,13 @@ import { NextResponse } from "next/server"
 import { google } from "googleapis"
 import { JWT } from "google-auth-library"
 
+// Helper function to generate UUIDs (simple version)
+function generateId(prefix: string): string {
+  const timestamp = Date.now().toString(36)
+  const randomPart = Math.random().toString(36).substring(2, 8)
+  return `${prefix}${timestamp}${randomPart}`.toUpperCase()
+}
+
 // Initialize the sheets API client
 const initSheetsClient = async () => {
   try {
@@ -49,13 +56,13 @@ export async function GET(request: Request) {
       })
 
       const clientRows = clientResponse.data.values || []
-      responseData.clients = clientRows.map((row) => ({
-        id: row[0] || `CL${Math.floor(Math.random() * 10000)}`,
+      responseData.clients = clientRows.map((row, index) => ({
+        id: row[0] || generateId("CL"),
         name: row[1] || "Unknown Client",
-        contact: row[2] || "No Contact",
+        contact: row[2] || "No Contact", 
         email: row[3] || "no-email@example.com",
         phone: row[4] || "No Phone",
-        status: row[5] || "Inactive",
+        status: row[5] || "Active",
         value: row[6] || "$0",
       }))
     }
@@ -68,14 +75,16 @@ export async function GET(request: Request) {
       })
 
       const projectRows = projectResponse.data.values || []
-      responseData.projects = projectRows.map((row) => ({
-        id: row[0] || `PRJ${Math.floor(Math.random() * 10000)}`,
+      responseData.projects = projectRows.map((row, index) => ({
+        id: row[0] || generateId("PRJ"),
         name: row[1] || "Unknown Project",
-        clientId: row[2], // Reference to client ID
+        clientId: row[2] || "", // Reference to client ID
         type: row[3] || "Other",
-        status: row[4] || "Not Started",
+        status: row[4] || "Not Started", 
         startDate: row[5] || new Date().toISOString(),
         deadline: row[6] || new Date().toISOString(),
+        description: row[7] || "",
+        budget: row[8] || "$0",
       }))
     }
 
@@ -87,14 +96,43 @@ export async function GET(request: Request) {
       })
 
       const agentRows = agentResponse.data.values || []
-      responseData.agents = agentRows.map((row) => ({
-        id: row[0] || `AGT${Math.floor(Math.random() * 10000)}`,
+      responseData.agents = agentRows.map((row, index) => ({
+        id: row[0] || generateId("AGT"),
         name: row[1] || "Unknown Agent",
         email: row[2] || "no-email@example.com",
-        phone: row[3] || "No Phone",
-        specialties: (row[4] || "").split(",").map((s) => s.trim()),
+        phone: row[3] || "No Phone", 
+        specialties: (row[4] || "").split(",").map((s) => s.trim()).filter(s => s),
         capacity: Number.parseInt(row[5] || "40", 10),
+        currentWorkload: Number.parseInt(row[6] || "0", 10),
       }))
+    }
+
+    // Fetch task data if requested
+    if (dataType === "tasks" || dataType === "all") {
+      try {
+        const taskResponse = await sheets.spreadsheets.values.get({
+          spreadsheetId: SPREADSHEET_ID,
+          range: "Tasks!A2:Z",
+        })
+
+        const taskRows = taskResponse.data.values || []
+        responseData.tasks = taskRows.map((row, index) => ({
+          id: row[0] || generateId("TSK"),
+          title: row[1] || "Untitled Task",
+          description: row[2] || "",
+          projectId: row[3] || "",
+          assignedAgentId: row[4] || "",
+          status: row[5] || "To Do",
+          priority: row[6] || "Medium",
+          dueDate: row[7] || new Date().toISOString(),
+          estimatedHours: Number.parseFloat(row[8] || "0"),
+          actualHours: Number.parseFloat(row[9] || "0"),
+          createdDate: row[10] || new Date().toISOString(),
+        }))
+      } catch (error) {
+        console.log("Tasks sheet not found, skipping...")
+        responseData.tasks = []
+      }
     }
 
     return NextResponse.json(responseData)

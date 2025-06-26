@@ -153,7 +153,7 @@ const generateSampleEvents = (): ScheduleEvent[] => {
   return events
 }
 
-const sampleEvents = generateSampleEvents()
+const sampleEvents = React.useMemo(() => generateSampleEvents(), [])
 
 export function SEOCalendarScheduler() {
   const [currentDate, setCurrentDate] = React.useState(new Date())
