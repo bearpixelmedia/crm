@@ -153,10 +153,9 @@ const generateSampleEvents = (): ScheduleEvent[] => {
   return events
 }
 
-const sampleEvents = React.useMemo(() => generateSampleEvents(), [])
-
 export function SEOCalendarScheduler() {
   const [currentDate, setCurrentDate] = React.useState(new Date())
+  const sampleEvents = React.useMemo(() => generateSampleEvents(), [])
   const [events, setEvents] = React.useState<ScheduleEvent[]>(sampleEvents)
   const [selectedDate, setSelectedDate] = React.useState<Date | null>(null)
   const [isAddEventDialogOpen, setIsAddEventDialogOpen] = React.useState(false)
