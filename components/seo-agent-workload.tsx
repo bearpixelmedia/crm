@@ -165,8 +165,6 @@ const generateAgentSchedules = (): AgentSchedule[] => {
   return schedules
 }
 
-const agentSchedules = React.useMemo(() => generateAgentSchedules(), [])
-
 export function SEOAgentWorkload() {
   const [currentWeekStart, setCurrentWeekStart] = React.useState(startOfWeek(new Date()))
   const [view, setView] = React.useState<"overview" | "detailed">("overview")
@@ -227,6 +225,8 @@ export function SEOAgentWorkload() {
 
     return Object.values(clientHours).sort((a, b) => b.hours - a.hours)
   }
+
+  const agentSchedules = React.useMemo(() => generateAgentSchedules(), [])
 
   return (
     <div className="space-y-6">
