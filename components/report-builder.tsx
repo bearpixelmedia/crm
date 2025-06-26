@@ -33,6 +33,41 @@ interface ReportBuilderProps {
   isNew?: boolean
 }
 
+// Default templates for YOLO mode
+const templates: ReportTemplate[] = [
+  {
+    id: "seo-basic",
+    name: "SEO Basic Report",
+    type: "seo",
+    description: "A basic SEO performance report template.",
+    sections: [
+      { id: "section-1", title: "Overview", type: "text", content: "SEO overview goes here." },
+      { id: "section-2", title: "Keyword Rankings", type: "table" },
+      { id: "section-3", title: "Traffic Metrics", type: "chart" },
+    ],
+  },
+  {
+    id: "marketing-monthly",
+    name: "Marketing Monthly Report",
+    type: "marketing",
+    description: "Monthly marketing performance summary.",
+    sections: [
+      { id: "section-1", title: "Campaign Summary", type: "text", content: "Summary of campaigns." },
+      { id: "section-2", title: "Leads Generated", type: "metric" },
+      { id: "section-3", title: "Channel Performance", type: "chart" },
+    ],
+  },
+  {
+    id: "custom-template",
+    name: "Custom Report",
+    type: "custom",
+    description: "A fully customizable report template.",
+    sections: [
+      { id: "section-1", title: "Custom Section", type: "custom", content: "Add your own content here." },
+    ],
+  },
+]
+
 export function ReportBuilder({ report, isNew = false }: ReportBuilderProps) {
   const router = useRouter()
   const { clients, projects } = useData()
