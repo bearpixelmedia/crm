@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -19,84 +19,6 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { useData } from "@/context/data-context"
 import type { Report, ReportStatus } from "@/types/report"
-
-// Mock data for reports
-const mockReports: Report[] = [
-  {
-    id: "report1",
-    name: "Monthly SEO Performance",
-    type: "seo",
-    description: "Comprehensive overview of SEO performance metrics",
-    createdAt: "2023-05-01T14:30:00Z",
-    createdBy: "John Doe",
-    frequency: "monthly",
-    lastGenerated: "2023-05-01T15:30:00Z",
-    nextGeneration: "2023-06-01T15:30:00Z",
-    status: "delivered",
-    recipients: ["client@example.com", "team@whitefox.com"],
-    clientId: "client1",
-    projectId: "project1",
-    templateId: "template1",
-  },
-  {
-    id: "report2",
-    name: "Weekly Content Performance",
-    type: "marketing",
-    description: "Analysis of content engagement and performance",
-    createdAt: "2023-05-05T09:15:00Z",
-    createdBy: "Jane Smith",
-    frequency: "weekly",
-    lastGenerated: "2023-05-05T10:15:00Z",
-    nextGeneration: "2023-05-12T10:15:00Z",
-    status: "scheduled",
-    recipients: ["client@example.com"],
-    clientId: "client2",
-    templateId: "template2",
-  },
-  {
-    id: "report3",
-    name: "Quarterly Business Review",
-    type: "client",
-    description: "Comprehensive review of client business performance",
-    createdAt: "2023-04-01T11:00:00Z",
-    createdBy: "John Doe",
-    frequency: "quarterly",
-    lastGenerated: "2023-04-01T12:30:00Z",
-    nextGeneration: "2023-07-01T12:30:00Z",
-    status: "generated",
-    recipients: ["client@example.com", "executive@client.com"],
-    clientId: "client1",
-    templateId: "template3",
-  },
-  {
-    id: "report4",
-    name: "Project Performance Report",
-    type: "project",
-    description: "Detailed analysis of project metrics and outcomes",
-    createdAt: "2023-05-10T14:00:00Z",
-    createdBy: "Jane Smith",
-    frequency: "monthly",
-    status: "draft",
-    recipients: [],
-    clientId: "client3",
-    projectId: "project3",
-    templateId: "template4",
-  },
-  {
-    id: "report5",
-    name: "Financial Summary",
-    type: "financial",
-    description: "Overview of financial performance and metrics",
-    createdAt: "2023-05-15T10:30:00Z",
-    createdBy: "John Doe",
-    frequency: "monthly",
-    lastGenerated: "2023-05-15T11:30:00Z",
-    nextGeneration: "2023-06-15T11:30:00Z",
-    status: "delivered",
-    recipients: ["finance@whitefox.com", "executive@whitefox.com"],
-    templateId: "template5",
-  },
-]
 
 // Status badge colors
 const statusColors: Record<ReportStatus, string> = {
@@ -118,10 +40,22 @@ export function ReportsList() {
   const router = useRouter()
   const { clients, projects } = useData()
 
-  const [reports, setReports] = useState<Report[]>(mockReports)
+  const [reports, setReports] = useState<Report[]>([])
   const [searchQuery, setSearchQuery] = useState("")
   const [typeFilter, setTypeFilter] = useState<string>("")
   const [statusFilter, setStatusFilter] = useState<string>("")
+
+  useEffect(() => {
+    // Fetch reports from API or context
+    const fetchReports = async () => {
+      const response = await fetch("/api/reports")
+      if (response.ok) {
+        const data = await response.json()
+        setReports(data)
+      }
+    }
+    fetchReports()
+  }, [])
 
   // Filtered reports based on search and filters
   const filteredReports = reports.filter((report) => {

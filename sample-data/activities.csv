@@ -1,0 +1,11 @@
+ID,Type,Action,Subject,User Name,User Initials,Timestamp
+ACT001,client,created,Acme Corporation,Carol Martinez,CM,2023-08-01T09:00:00Z
+ACT002,project,updated,Website Redesign,Bob Williams,BW,2023-08-01T14:30:00Z
+ACT003,task,completed,SEO keyword research,Alice Johnson,AJ,2023-08-02T11:15:00Z
+ACT004,invoice,created,INV-2023-001,Carol Martinez,CM,2023-08-01T16:00:00Z
+ACT005,project,created,Mobile App,David Chen,DC,2023-08-01T10:30:00Z
+ACT006,task,created,Complete website wireframes,Bob Williams,BW,2023-08-01T15:45:00Z
+ACT007,client,updated,TechNova Solutions,Alice Johnson,AJ,2023-08-02T08:30:00Z
+ACT008,report,generated,Monthly SEO Performance,Alice Johnson,AJ,2023-08-01T15:30:00Z
+ACT009,task,updated,Social media strategy,Emma Thompson,ET,2023-08-02T13:20:00Z
+ACT010,invoice,updated,INV-2023-002,Carol Martinez,CM,2023-08-05T12:00:00Z 

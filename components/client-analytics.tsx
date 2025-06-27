@@ -16,22 +16,9 @@ import {
   Line,
 } from "recharts"
 import { useMemo } from "react"
+import { useData } from "@/context/data-context"
 
-// Mock data for client analytics
-const revenueData = [
-  { month: "Jan", revenue: 4000 },
-  { month: "Feb", revenue: 5000 },
-  { month: "Mar", revenue: 3000 },
-  { month: "Apr", revenue: 7000 },
-  { month: "May", revenue: 5000 },
-  { month: "Jun", revenue: 6000 },
-  { month: "Jul", revenue: 8000 },
-  { month: "Aug", revenue: 9000 },
-  { month: "Sep", revenue: 7500 },
-  { month: "Oct", revenue: 8500 },
-  { month: "Nov", revenue: 9500 },
-  { month: "Dec", revenue: 10000 },
-]
+const { clients, projects } = useData()
 
 const projectStatusData = [
   { name: "Completed", value: 12, color: "#10b981" },

@@ -1,0 +1,9 @@
+ID,Title,Start,End,Type,Client,Project,Description,All Day
+EVT001,Client Meeting - Acme Corp,2023-08-15T10:00:00Z,2023-08-15T11:30:00Z,meeting,Acme Corporation,Website Redesign,Discuss website redesign progress and next steps,false
+EVT002,SEO Strategy Session,2023-08-16T14:00:00Z,2023-08-16T15:00:00Z,meeting,TechNova Solutions,SEO Campaign,Review keyword research and content strategy,false
+EVT003,Project Deadline,2023-08-20T00:00:00Z,2023-08-20T23:59:59Z,reminder,Global Enterprises,Brand Identity,Brand identity project final deadline,true
+EVT004,Team Standup,2023-08-14T09:30:00Z,2023-08-14T10:00:00Z,meeting,,,Daily team standup meeting,false
+EVT005,Mobile App Kickoff,2023-08-21T13:00:00Z,2023-08-21T15:00:00Z,meeting,Acme Corporation,Mobile App,Project kickoff meeting for mobile app development,false
+EVT006,Marketing Review,2023-08-18T11:00:00Z,2023-08-18T12:00:00Z,meeting,MegaCorp Industries,Digital Marketing,Monthly marketing campaign review,false
+EVT007,Development Sprint Planning,2023-08-22T09:00:00Z,2023-08-22T10:30:00Z,meeting,StartupXYZ,E-commerce Platform,Sprint planning for e-commerce development,false
+EVT008,Client Check-in Call,2023-08-17T15:00:00Z,2023-08-17T15:30:00Z,meeting,TechNova Solutions,SEO Campaign,Weekly check-in call with client,false 

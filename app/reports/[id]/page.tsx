@@ -8,78 +8,33 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { Badge } from "@/components/ui/badge"
 import { Download, Mail, RefreshCw } from "lucide-react"
 import type { Report } from "@/types/report"
-
-// Mock data for reports
-const mockReports: Record<string, Report> = {
-  report1: {
-    id: "report1",
-    name: "Monthly SEO Performance",
-    type: "seo",
-    description: "Comprehensive overview of SEO performance metrics",
-    createdAt: "2023-05-01T14:30:00Z",
-    createdBy: "John Doe",
-    frequency: "monthly",
-    lastGenerated: "2023-05-01T15:30:00Z",
-    nextGeneration: "2023-06-01T15:30:00Z",
-    status: "delivered",
-    recipients: ["client@example.com", "team@whitefox.com"],
-    clientId: "client1",
-    projectId: "project1",
-    templateId: "template1",
-  },
-  report2: {
-    id: "report2",
-    name: "Weekly Content Performance",
-    type: "marketing",
-    description: "Analysis of content engagement and performance",
-    createdAt: "2023-05-05T09:15:00Z",
-    createdBy: "Jane Smith",
-    frequency: "weekly",
-    lastGenerated: "2023-05-05T10:15:00Z",
-    nextGeneration: "2023-05-12T10:15:00Z",
-    status: "scheduled",
-    recipients: ["client@example.com"],
-    clientId: "client2",
-    templateId: "template2",
-  },
-}
+import { useData } from "@/context/data-context"
 
 export default function ReportDetailsPage() {
   const params = useParams()
   const router = useRouter()
+  const { projects, clients } = useData()
   const [report, setReport] = useState<Report | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    // Simulate API call to fetch report
     const fetchReport = async () => {
       setLoading(true)
       try {
-        // In a real app, this would be an API call
-        // const response = await fetch(`/api/reports/${params.id}`);
-        // const data = await response.json();
-
-        // Using mock data instead
-        const mockReport = mockReports[params.id as string]
-
-        if (!mockReport) {
-          throw new Error("Report not found")
-        }
-
-        setReport(mockReport)
+        // Fetch report from API
+        const response = await fetch(`/api/reports/${params.id}`)
+        if (!response.ok) throw new Error("Report not found")
+        const data = await response.json()
+        setReport(data)
         setError(null)
       } catch (err) {
-        console.error("Error fetching report:", err)
         setError("Failed to load report details")
       } finally {
         setLoading(false)
       }
     }
-
-    if (params.id) {
-      fetchReport()
-    }
+    if (params.id) fetchReport()
   }, [params.id])
 
   const handleGenerateNow = () => {

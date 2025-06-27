@@ -2,7 +2,7 @@
 
 import type React from "react"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Search, Filter, MoreHorizontal, Edit, Trash2, UserPlus } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -28,6 +28,7 @@ import {
 } from "@/components/ui/dialog"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { useData } from "@/context/data-context"
 
 type User = {
   id: string
@@ -39,59 +40,11 @@ type User = {
   department?: string
 }
 
-// Mock data
-const mockUsers: User[] = [
-  {
-    id: "user1",
-    name: "John Doe",
-    email: "john@whitefox.com",
-    role: "admin",
-    status: "active",
-    avatar: "/stylized-jd-initials.png",
-    department: "Management",
-  },
-  {
-    id: "user2",
-    name: "Jane Smith",
-    email: "jane@whitefox.com",
-    role: "manager",
-    status: "active",
-    avatar: "/javascript-code.png",
-    department: "SEO",
-  },
-  {
-    id: "user3",
-    name: "Mike Johnson",
-    email: "mike@whitefox.com",
-    role: "agent",
-    status: "active",
-    avatar: "/abstract-geometric-mj.png",
-    department: "Web Design",
-  },
-  {
-    id: "user4",
-    name: "Sarah Williams",
-    email: "sarah@whitefox.com",
-    role: "agent",
-    status: "active",
-    avatar: "/stylized-sw.png",
-    department: "Content",
-  },
-  {
-    id: "user5",
-    name: "Alex Brown",
-    email: "alex@whitefox.com",
-    role: "agent",
-    status: "inactive",
-    avatar: "/abstract-geometric-ab.png",
-    department: "Social Media",
-  },
-]
-
 export function UserManagement() {
-  const [users, setUsers] = useState<User[]>(mockUsers)
+  const { agents } = useData()
+  const [users, setUsers] = useState<User[]>(agents)
   const [searchQuery, setSearchQuery] = useState("")
-  const [filteredUsers, setFilteredUsers] = useState<User[]>(mockUsers)
+  const [filteredUsers, setFilteredUsers] = useState<User[]>(agents)
   const [isAddUserOpen, setIsAddUserOpen] = useState(false)
   const [newUser, setNewUser] = useState<Partial<User>>({
     name: "",
@@ -100,6 +53,11 @@ export function UserManagement() {
     status: "active",
     department: "",
   })
+
+  useEffect(() => {
+    setUsers(agents)
+    setFilteredUsers(agents)
+  }, [agents])
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const query = e.target.value.toLowerCase()

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -9,67 +9,7 @@ import { Input } from "@/components/ui/input"
 import { Search, Plus, FileText, Download } from "lucide-react"
 import { useRouter } from "next/navigation"
 import type { Invoice } from "@/types/invoice"
-
-// Mock data for invoices
-const mockInvoices: Invoice[] = [
-  {
-    id: "INV-001",
-    clientId: "client1",
-    projectId: "project1",
-    number: "INV-2023-001",
-    date: "2023-05-01",
-    dueDate: "2023-05-15",
-    status: "paid",
-    items: [
-      { id: "item1", description: "SEO Audit", quantity: 1, rate: 500, amount: 500 },
-      { id: "item2", description: "Keyword Research", quantity: 1, rate: 300, amount: 300 },
-    ],
-    subtotal: 800,
-    tax: 80,
-    total: 880,
-  },
-  {
-    id: "INV-002",
-    clientId: "client2",
-    projectId: "project2",
-    number: "INV-2023-002",
-    date: "2023-05-05",
-    dueDate: "2023-05-20",
-    status: "pending",
-    items: [{ id: "item1", description: "Content Creation", quantity: 4, rate: 250, amount: 1000 }],
-    subtotal: 1000,
-    tax: 100,
-    total: 1100,
-  },
-  {
-    id: "INV-003",
-    clientId: "client3",
-    number: "INV-2023-003",
-    date: "2023-05-10",
-    dueDate: "2023-05-25",
-    status: "overdue",
-    items: [
-      { id: "item1", description: "Website Optimization", quantity: 1, rate: 750, amount: 750 },
-      { id: "item2", description: "Backlink Building", quantity: 1, rate: 500, amount: 500 },
-    ],
-    subtotal: 1250,
-    tax: 125,
-    total: 1375,
-  },
-  {
-    id: "INV-004",
-    clientId: "client1",
-    projectId: "project3",
-    number: "INV-2023-004",
-    date: "2023-05-15",
-    dueDate: "2023-05-30",
-    status: "draft",
-    items: [{ id: "item1", description: "Monthly SEO Maintenance", quantity: 1, rate: 450, amount: 450 }],
-    subtotal: 450,
-    tax: 45,
-    total: 495,
-  },
-]
+import { useData } from "@/context/data-context"
 
 // Status badge colors
 const statusColors = {
@@ -89,9 +29,22 @@ const formatCurrency = (amount: number) => {
 }
 
 export function InvoiceList() {
-  const [invoices, setInvoices] = useState<Invoice[]>(mockInvoices)
+  const { clients, projects } = useData()
+  const [invoices, setInvoices] = useState<Invoice[]>([])
   const [searchQuery, setSearchQuery] = useState("")
   const router = useRouter()
+
+  useEffect(() => {
+    // Fetch invoices from API or context
+    const fetchInvoices = async () => {
+      const response = await fetch("/api/invoices")
+      if (response.ok) {
+        const data = await response.json()
+        setInvoices(data)
+      }
+    }
+    fetchInvoices()
+  }, [])
 
   const filteredInvoices = invoices.filter(
     (invoice) =>

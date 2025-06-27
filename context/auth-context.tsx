@@ -23,34 +23,6 @@ type AuthContextType = {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
-// Mock users for demo
-const MOCK_USERS = [
-  {
-    id: "user1",
-    name: "Admin User",
-    email: "admin@whitefox.com",
-    password: "admin123",
-    role: "admin" as const,
-    avatar: "/australian-outback-landscape.png",
-  },
-  {
-    id: "user2",
-    name: "Manager User",
-    email: "manager@whitefox.com",
-    password: "manager123",
-    role: "manager" as const,
-    avatar: "/mu-symbol.png",
-  },
-  {
-    id: "user3",
-    name: "Agent User",
-    email: "agent@whitefox.com",
-    password: "agent123",
-    role: "agent" as const,
-    avatar: "/australian-outback-landscape.png",
-  },
-]
-
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
   const [isLoading, setIsLoading] = useState(true)
@@ -68,26 +40,37 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const login = async (email: string, password: string) => {
     setIsLoading(true)
 
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1000))
+    try {
+      const response = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      })
 
-    const foundUser = MOCK_USERS.find((u) => u.email === email && u.password === password)
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.error || "Authentication failed")
+      }
 
-    if (foundUser) {
-      const { password, ...userWithoutPassword } = foundUser
-      setUser(userWithoutPassword)
-      localStorage.setItem("user", JSON.stringify(userWithoutPassword))
+      const { user, token } = await response.json()
+      
+      setUser(user)
+      localStorage.setItem("user", JSON.stringify(user))
+      localStorage.setItem("token", token)
       router.push("/")
-    } else {
-      throw new Error("Invalid email or password")
+    } catch (error) {
+      throw error
+    } finally {
+      setIsLoading(false)
     }
-
-    setIsLoading(false)
   }
 
   const logout = () => {
     setUser(null)
     localStorage.removeItem("user")
+    localStorage.removeItem("token")
     router.push("/login")
   }
 

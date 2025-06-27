@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Calendar, dateFnsLocalizer } from "react-big-calendar"
 import { format, parse, startOfWeek, getDay } from "date-fns"
 import enUS from "date-fns/locale/en-US"
@@ -12,6 +12,7 @@ import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
+import { useData } from "@/context/data-context"
 
 const locales = {
   "en-US": enUS,
@@ -37,60 +38,6 @@ type Event = {
   project?: string
   description?: string
 }
-
-// Mock events
-const mockEvents: Event[] = [
-  {
-    id: "event1",
-    title: "Client Meeting - Acme Corp",
-    start: new Date(2023, 8, 15, 10, 0),
-    end: new Date(2023, 8, 15, 11, 30),
-    type: "meeting",
-    client: "Acme Corporation",
-    project: "Website Redesign",
-    description: "Discuss website redesign progress and next steps",
-  },
-  {
-    id: "event2",
-    title: "SEO Strategy Session",
-    start: new Date(2023, 8, 16, 14, 0),
-    end: new Date(2023, 8, 16, 15, 0),
-    type: "meeting",
-    client: "TechNova Solutions",
-    project: "SEO Campaign",
-    description: "Review keyword research and content strategy",
-  },
-  {
-    id: "event3",
-    title: "Content Deadline",
-    start: new Date(2023, 8, 18, 9, 0),
-    end: new Date(2023, 8, 18, 9, 0),
-    allDay: true,
-    type: "task",
-    client: "Global Enterprises",
-    project: "Content Marketing",
-    description: "Submit Q4 content calendar and blog drafts",
-  },
-  {
-    id: "event4",
-    title: "Team Standup",
-    start: new Date(2023, 8, 14, 9, 30),
-    end: new Date(2023, 8, 14, 10, 0),
-    type: "meeting",
-    description: "Daily team standup meeting",
-  },
-  {
-    id: "event5",
-    title: "Project Deadline",
-    start: new Date(2023, 8, 30, 0, 0),
-    end: new Date(2023, 8, 30, 0, 0),
-    allDay: true,
-    type: "reminder",
-    client: "Acme Corporation",
-    project: "Website Redesign",
-    description: "Website redesign project deadline",
-  },
-]
 
 // Adjust dates to be relative to current date
 const adjustDates = (events: Event[]) => {
@@ -122,7 +69,8 @@ const adjustDates = (events: Event[]) => {
 }
 
 export function ScheduleCalendar() {
-  const [events, setEvents] = useState<Event[]>(adjustDates(mockEvents))
+  const { projects, clients } = useData()
+  const [events, setEvents] = useState<Event[]>([])
   const [isAddEventOpen, setIsAddEventOpen] = useState(false)
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null)
   const [isViewEventOpen, setIsViewEventOpen] = useState(false)
@@ -132,6 +80,27 @@ export function ScheduleCalendar() {
     end: new Date(new Date().getTime() + 60 * 60 * 1000), // 1 hour later
     type: "meeting",
   })
+
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        const response = await fetch("/api/events")
+        if (response.ok) {
+          const data = await response.json()
+          // Convert string dates back to Date objects
+          const eventsWithDates = data.map((event: any) => ({
+            ...event,
+            start: new Date(event.start),
+            end: new Date(event.end),
+          }))
+          setEvents(eventsWithDates)
+        }
+      } catch (error) {
+        console.error("Error fetching events:", error)
+      }
+    }
+    fetchEvents()
+  }, [])
 
   const handleSelectSlot = ({ start, end }: { start: Date; end: Date }) => {
     setNewEvent({

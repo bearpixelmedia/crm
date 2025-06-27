@@ -16,11 +16,64 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { MoreHorizontal, Plus, Search } from "lucide-react"
 import { useData } from "@/context/data-context"
+import { Skeleton } from "@/components/ui/skeleton"
 
 export function ClientStats({ onViewClient }) {
-  const { clients, projects } = useData()
+  const { clients, projects, isLoading } = useData()
   const [searchTerm, setSearchTerm] = useState("")
   const [selectedClient, setSelectedClient] = useState(null)
+
+  // Show loading skeletons while data is being fetched
+  if (isLoading) {
+    return (
+      <div className="space-y-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Skeleton className="h-4 w-4" />
+            <Skeleton className="h-10 w-[300px]" />
+          </div>
+          <Skeleton className="h-10 w-32" />
+        </div>
+
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+          {[...Array(4)].map((_, i) => (
+            <Card key={i}>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <Skeleton className="h-4 w-24" />
+              </CardHeader>
+              <CardContent>
+                <Skeleton className="h-8 w-16 mb-2" />
+                <Skeleton className="h-3 w-32" />
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+
+        <Card>
+          <CardHeader>
+            <Skeleton className="h-6 w-24 mb-2" />
+            <Skeleton className="h-4 w-48" />
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-2">
+              {[...Array(5)].map((_, i) => (
+                <div key={i} className="flex items-center space-x-4 p-2">
+                  <Skeleton className="h-4 w-16" />
+                  <Skeleton className="h-4 w-32" />
+                  <Skeleton className="h-4 w-24" />
+                  <Skeleton className="h-4 w-32" />
+                  <Skeleton className="h-4 w-16" />
+                  <Skeleton className="h-4 w-12" />
+                  <Skeleton className="h-4 w-20" />
+                  <Skeleton className="h-4 w-8" />
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    )
+  }
 
   const filteredClients = clients.filter(
     (client) =>
@@ -36,7 +89,7 @@ export function ClientStats({ onViewClient }) {
     }
   }
 
-  // Calculate stats
+  // Calculate stats from real data
   const totalClients = clients.length
   const activeClients = clients.filter((client) => client.status === "Active").length
   const totalValue = clients.reduce((sum, client) => {
@@ -108,25 +161,41 @@ export function ClientStats({ onViewClient }) {
       <Card>
         <CardHeader>
           <CardTitle>Client List</CardTitle>
-          <CardDescription>Manage your client relationships and view client details.</CardDescription>
+          <CardDescription>
+            Manage your client relationships and view client details. {clients.length} total clients.
+          </CardDescription>
         </CardHeader>
         <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>ID</TableHead>
-                <TableHead>Name</TableHead>
-                <TableHead>Contact</TableHead>
-                <TableHead>Email</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Projects</TableHead>
-                <TableHead>Value</TableHead>
-                <TableHead></TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {filteredClients.length > 0 ? (
-                filteredClients.map((client) => (
+          {filteredClients.length === 0 ? (
+            <div className="text-center py-8 text-muted-foreground">
+              {clients.length === 0 ? (
+                <>
+                  <h3 className="text-lg font-medium mb-2">No clients yet</h3>
+                  <p>Start by adding your first client to track relationships and projects.</p>
+                </>
+              ) : (
+                <>
+                  <h3 className="text-lg font-medium mb-2">No clients match your search</h3>
+                  <p>Try adjusting your search terms to find clients.</p>
+                </>
+              )}
+            </div>
+          ) : (
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>ID</TableHead>
+                  <TableHead>Name</TableHead>
+                  <TableHead>Contact</TableHead>
+                  <TableHead>Email</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Projects</TableHead>
+                  <TableHead>Value</TableHead>
+                  <TableHead></TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {filteredClients.map((client) => (
                   <TableRow key={client.id}>
                     <TableCell className="font-medium">{client.id}</TableCell>
                     <TableCell>{client.name}</TableCell>
@@ -158,16 +227,10 @@ export function ClientStats({ onViewClient }) {
                       </DropdownMenu>
                     </TableCell>
                   </TableRow>
-                ))
-              ) : (
-                <TableRow>
-                  <TableCell colSpan={8} className="text-center">
-                    No clients found
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
+                ))}
+              </TableBody>
+            </Table>
+          )}
         </CardContent>
       </Card>
       {selectedClient && (

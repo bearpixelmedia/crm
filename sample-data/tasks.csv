@@ -1,0 +1,9 @@
+ID,Title,Description,ProjectId,AssignedAgentId,Status,Priority,DueDate,EstimatedHours,ActualHours,CreatedDate
+TSK001,Complete website wireframes,Create detailed wireframes for all pages,PRJ001,AGT002,In Progress,High,2023-09-15,16,12,2023-08-01
+TSK002,SEO keyword research,Research and compile target keywords,PRJ002,AGT001,Completed,Medium,2023-07-20,8,8,2023-07-01
+TSK003,Design brand logo,Create new company logo design,PRJ003,AGT006,Completed,High,2023-06-15,12,14,2023-05-10
+TSK004,Set up development environment,Configure dev environment for e-commerce,PRJ004,AGT004,To Do,Medium,2023-08-15,4,0,2023-08-01
+TSK005,Social media strategy,Develop comprehensive social media plan,PRJ005,AGT005,In Progress,Medium,2023-08-30,20,15,2023-07-15
+TSK006,Mobile app wireframes,Create wireframes for mobile application,PRJ006,AGT002,To Do,High,2023-08-20,24,0,2023-08-01
+TSK007,Content audit,Audit existing website content,PRJ002,AGT001,In Progress,Low,2023-08-10,12,8,2023-07-01
+TSK008,Database design,Design database schema for e-commerce,PRJ004,AGT004,To Do,High,2023-08-25,16,0,2023-08-01 

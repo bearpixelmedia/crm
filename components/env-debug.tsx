@@ -6,10 +6,8 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { AlertCircle, CheckCircle, Info } from "lucide-react"
 import { isProduction, isPreview, isDevelopment } from "@/lib/environment"
-import { useData } from "@/context/data-context"
 
 export function EnvDebug() {
-  const { usingMockData } = useData()
   const [envStatus, setEnvStatus] = useState<{
     checked: boolean
     googleClientEmail: boolean
@@ -61,9 +59,6 @@ export function EnvDebug() {
           <div className="grid grid-cols-2 gap-2">
             <div className="font-medium">Current Environment:</div>
             <div>{currentEnvironment}</div>
-
-            <div className="font-medium">Data Source:</div>
-            <div>{usingMockData ? "Mock Data" : "Google Sheets API"}</div>
 
             <div className="font-medium">NEXT_PUBLIC_VERCEL_ENV:</div>
             <div>{process.env.NEXT_PUBLIC_VERCEL_ENV || "Not set"}</div>

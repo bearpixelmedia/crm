@@ -2,7 +2,7 @@
 
 import type React from "react"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { PlusCircle, CheckCircle, Circle, Clock, AlertCircle, Filter, Search } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import { useData } from "@/context/data-context"
 
 type Task = {
   id: string
@@ -22,64 +23,14 @@ type Task = {
   projectName?: string
 }
 
-// Mock data
-const mockTasks: Task[] = [
-  {
-    id: "task1",
-    title: "Complete website wireframes",
-    status: "todo",
-    priority: "high",
-    dueDate: "2023-09-15",
-    assignee: "John Doe",
-    projectId: "proj1",
-    projectName: "Acme Website Redesign",
-  },
-  {
-    id: "task2",
-    title: "SEO keyword research",
-    status: "in-progress",
-    priority: "medium",
-    dueDate: "2023-09-20",
-    assignee: "Jane Smith",
-    projectId: "proj2",
-    projectName: "TechNova SEO Campaign",
-  },
-  {
-    id: "task3",
-    title: "Content calendar for Q4",
-    status: "todo",
-    priority: "medium",
-    dueDate: "2023-09-25",
-    assignee: "Mike Johnson",
-    projectId: "proj3",
-    projectName: "Global Marketing Strategy",
-  },
-  {
-    id: "task4",
-    title: "Social media graphics",
-    status: "done",
-    priority: "low",
-    dueDate: "2023-09-10",
-    assignee: "Sarah Williams",
-    projectId: "proj2",
-    projectName: "TechNova SEO Campaign",
-  },
-  {
-    id: "task5",
-    title: "Client meeting preparation",
-    status: "in-progress",
-    priority: "high",
-    dueDate: "2023-09-12",
-    assignee: "John Doe",
-    projectId: "proj1",
-    projectName: "Acme Website Redesign",
-  },
-]
-
 export function TaskManagement() {
-  const [tasks, setTasks] = useState<Task[]>(mockTasks)
+  const { tasks } = useData()
   const [searchQuery, setSearchQuery] = useState("")
-  const [filteredTasks, setFilteredTasks] = useState<Task[]>(mockTasks)
+  const [filteredTasks, setFilteredTasks] = useState<Task[]>(tasks)
+
+  useEffect(() => {
+    setFilteredTasks(tasks)
+  }, [tasks])
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const query = e.target.value.toLowerCase()
@@ -101,13 +52,7 @@ export function TaskManagement() {
 
   const handleStatusChange = (taskId: string, newStatus: Task["status"]) => {
     const updatedTasks = tasks.map((task) => (task.id === taskId ? { ...task, status: newStatus } : task))
-    setTasks(updatedTasks)
-
-    // Also update filtered tasks
-    const updatedFilteredTasks = filteredTasks.map((task) =>
-      task.id === taskId ? { ...task, status: newStatus } : task,
-    )
-    setFilteredTasks(updatedFilteredTasks)
+    setFilteredTasks(updatedTasks)
   }
 
   const getTasksByStatus = (status: Task["status"]) => {

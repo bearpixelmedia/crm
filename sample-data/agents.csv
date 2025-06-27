@@ -1,0 +1,7 @@
+ID,Name,Email,Phone,Specialties,Capacity,CurrentWorkload
+AGT001,Alice Johnson,alice@whitefox.com,(555) 987-6543,"SEO,Content Marketing",40,32
+AGT002,Bob Williams,bob@whitefox.com,(555) 876-5432,"Web Design,UI/UX",40,28
+AGT003,Carol Martinez,carol@whitefox.com,(555) 765-4321,"Project Management,Strategy",40,35
+AGT004,David Chen,david@whitefox.com,(555) 654-3210,"Development,Backend",40,30
+AGT005,Emma Thompson,emma@whitefox.com,(555) 543-2109,"Social Media,Marketing",40,25
+AGT006,Frank Rodriguez,frank@whitefox.com,(555) 432-1098,"Branding,Design",40,20 

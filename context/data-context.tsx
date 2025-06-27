@@ -2,8 +2,6 @@
 
 import type React from "react"
 import { createContext, useContext, useState, useEffect } from "react"
-import { getMockData } from "@/lib/mock-data"
-import { shouldUseMockData } from "@/lib/environment"
 
 // Define types for our data
 export type Client = {
@@ -61,7 +59,6 @@ type DataContextType = {
   isLoading: boolean
   error: string | null
   refreshData: () => Promise<void>
-  usingMockData: boolean
 }
 
 const DataContext = createContext<DataContextType | undefined>(undefined)
@@ -73,28 +70,11 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
   const [tasks, setTasks] = useState<Task[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  const [usingMockData, setUsingMockData] = useState(false)
 
   // Update the loadData function to use the API route
   const loadData = async () => {
     setIsLoading(true)
     setError(null)
-
-    // Check if we should use mock data
-    const useMock = shouldUseMockData()
-
-    if (useMock) {
-      // Use mock data
-      console.log("Using mock data due to environment settings")
-      const mockData = getMockData()
-      setClients(mockData.clients)
-      setProjects(mockData.projects)
-      setAgents(mockData.agents)
-      setTasks(mockData.tasks || [])
-      setUsingMockData(true)
-      setIsLoading(false)
-      return
-    }
 
     try {
       // Fetch data from our API route
@@ -117,18 +97,13 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
       setProjects(data.projects)
       setAgents(data.agents)
       setTasks(data.tasks || [])
-      setUsingMockData(false)
     } catch (err) {
       console.error("Error loading data from API:", err)
-      setError("Failed to load data from API. Using fallback data instead.")
-
-      // Fall back to mock data on error
-      const mockData = getMockData()
-      setClients(mockData.clients)
-      setProjects(mockData.projects)
-      setAgents(mockData.agents)
-      setTasks(mockData.tasks || [])
-      setUsingMockData(true)
+      setError("Failed to load data from API.")
+      setClients([])
+      setProjects([])
+      setAgents([])
+      setTasks([])
     } finally {
       setIsLoading(false)
     }
@@ -153,7 +128,6 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
         isLoading,
         error,
         refreshData,
-        usingMockData,
       }}
     >
       {children}

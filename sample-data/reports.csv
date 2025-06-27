@@ -1,0 +1,6 @@
+ID,Name,Type,Description,Created At,Created By,Frequency,Last Generated,Next Generation,Status,Recipients,Client ID,Project ID,Template ID
+RPT001,Monthly SEO Performance,seo,Comprehensive overview of SEO performance metrics,2023-08-01T14:30:00Z,Alice Johnson,monthly,2023-08-01T15:30:00Z,2023-09-01T15:30:00Z,delivered,"sarah@technova.com,team@whitefox.com",CL002,PRJ002,TPL001
+RPT002,Website Project Status,project,Weekly status update for website redesign,2023-08-05T09:15:00Z,Bob Williams,weekly,2023-08-05T10:15:00Z,2023-08-12T10:15:00Z,scheduled,"john@acmecorp.com,team@whitefox.com",CL001,PRJ001,TPL002
+RPT003,Quarterly Business Review,client,Comprehensive review of client business performance,2023-08-01T11:00:00Z,Carol Martinez,quarterly,2023-08-01T12:30:00Z,2023-11-01T12:30:00Z,delivered,"david@megacorp.com,executive@megacorp.com",CL005,,TPL003
+RPT004,Marketing Campaign Analysis,marketing,Analysis of digital marketing campaign performance,2023-08-10T14:00:00Z,Emma Thompson,monthly,2023-08-10T15:00:00Z,2023-09-10T15:00:00Z,generated,"david@megacorp.com,team@whitefox.com",CL005,PRJ005,TPL004
+RPT005,Financial Summary,financial,Monthly financial performance overview,2023-08-15T10:30:00Z,Carol Martinez,monthly,2023-08-15T11:30:00Z,2023-09-15T11:30:00Z,draft,"finance@whitefox.com,admin@whitefox.com",,,TPL005 

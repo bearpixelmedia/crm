@@ -29,106 +29,6 @@ import {
 import { useData } from "@/context/data-context"
 import type { File, Folder, FileType } from "@/types/file"
 
-// Mock data
-const mockFiles: File[] = [
-  {
-    id: "file1",
-    name: "SEO Audit Report - Q2.pdf",
-    type: "pdf",
-    size: 2450000,
-    url: "#",
-    uploadedBy: "John Doe",
-    uploadedAt: "2023-05-10T14:30:00Z",
-    clientId: "client1",
-    projectId: "project1",
-    tags: ["report", "seo", "audit"],
-  },
-  {
-    id: "file2",
-    name: "Website Analytics.xlsx",
-    type: "spreadsheet",
-    size: 1250000,
-    url: "#",
-    uploadedBy: "Jane Smith",
-    uploadedAt: "2023-05-08T09:15:00Z",
-    clientId: "client1",
-    projectId: "project1",
-    tags: ["analytics", "data"],
-  },
-  {
-    id: "file3",
-    name: "Content Calendar.xlsx",
-    type: "spreadsheet",
-    size: 980000,
-    url: "#",
-    uploadedBy: "John Doe",
-    uploadedAt: "2023-05-05T11:45:00Z",
-    clientId: "client1",
-    projectId: "project1",
-    tags: ["content", "planning"],
-  },
-  {
-    id: "file4",
-    name: "Client Logo.png",
-    type: "image",
-    size: 560000,
-    url: "#",
-    thumbnailUrl: "/placeholder.svg?key=qd4xm",
-    uploadedBy: "Jane Smith",
-    uploadedAt: "2023-05-03T16:20:00Z",
-    clientId: "client1",
-    tags: ["logo", "branding"],
-  },
-  {
-    id: "file5",
-    name: "Marketing Presentation.pptx",
-    type: "presentation",
-    size: 3450000,
-    url: "#",
-    uploadedBy: "John Doe",
-    uploadedAt: "2023-05-01T10:00:00Z",
-    clientId: "client1",
-    projectId: "project1",
-    tags: ["presentation", "marketing"],
-  },
-  {
-    id: "file6",
-    name: "Contract.pdf",
-    type: "pdf",
-    size: 750000,
-    url: "#",
-    uploadedBy: "Jane Smith",
-    uploadedAt: "2023-04-29T14:10:00Z",
-    clientId: "client1",
-    tags: ["legal", "contract"],
-  },
-]
-
-const mockFolders: Folder[] = [
-  {
-    id: "folder1",
-    name: "SEO Reports",
-    createdAt: "2023-04-15T09:00:00Z",
-    createdBy: "John Doe",
-    clientId: "client1",
-    projectId: "project1",
-  },
-  {
-    id: "folder2",
-    name: "Marketing Materials",
-    createdAt: "2023-04-20T11:30:00Z",
-    createdBy: "Jane Smith",
-    clientId: "client1",
-  },
-  {
-    id: "folder3",
-    name: "Contracts",
-    createdAt: "2023-04-25T14:45:00Z",
-    createdBy: "John Doe",
-    clientId: "client1",
-  },
-]
-
 // Helper function to get file icon
 const getFileIcon = (type: FileType) => {
   switch (type) {
@@ -168,8 +68,8 @@ export function FileBrowser() {
   const router = useRouter()
   const { clients, projects } = useData()
 
-  const [files, setFiles] = useState<File[]>(mockFiles)
-  const [folders, setFolders] = useState<Folder[]>(mockFolders)
+  const [files, setFiles] = useState<File[]>([])
+  const [folders, setFolders] = useState<Folder[]>([])
   const [searchQuery, setSearchQuery] = useState("")
   const [clientFilter, setClientFilter] = useState<string>("")
   const [projectFilter, setProjectFilter] = useState<string>("")

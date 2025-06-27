@@ -5,6 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { formatDistanceToNow } from "date-fns"
+import { useData } from "@/context/data-context"
 
 interface Activity {
   id: string
@@ -19,72 +20,24 @@ interface Activity {
   timestamp: Date
 }
 
-// Mock activity data - in a real implementation, this would come from your API
-const mockActivities: Activity[] = [
-  {
-    id: "act1",
-    type: "client",
-    action: "created",
-    subject: "Acme Corporation",
-    user: {
-      name: "John Doe",
-      initials: "JD",
-    },
-    timestamp: new Date(Date.now() - 25 * 60 * 1000), // 25 minutes ago
-  },
-  {
-    id: "act2",
-    type: "project",
-    action: "updated",
-    subject: "Website Redesign",
-    user: {
-      name: "Jane Smith",
-      initials: "JS",
-    },
-    timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000), // 2 hours ago
-  },
-  {
-    id: "act3",
-    type: "task",
-    action: "completed",
-    subject: "Keyword Research",
-    user: {
-      name: "Mike Johnson",
-      initials: "MJ",
-    },
-    timestamp: new Date(Date.now() - 5 * 60 * 60 * 1000), // 5 hours ago
-  },
-  {
-    id: "act4",
-    type: "comment",
-    action: "created",
-    subject: "SEO Strategy Discussion",
-    user: {
-      name: "Sarah Williams",
-      initials: "SW",
-    },
-    timestamp: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000), // 1 day ago
-  },
-  {
-    id: "act5",
-    type: "project",
-    action: "created",
-    subject: "Social Media Campaign",
-    user: {
-      name: "Alex Brown",
-      initials: "AB",
-    },
-    timestamp: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000), // 2 days ago
-  },
-]
+const { clients, projects } = useData()
 
 export function RecentActivity() {
   const [activities, setActivities] = useState<Activity[]>([])
 
   useEffect(() => {
-    // In a real implementation, this would fetch data from your API
-    // For now, we'll just use the mock data
-    setActivities(mockActivities)
+    const fetchActivities = async () => {
+      try {
+        const response = await fetch("/api/activities")
+        if (response.ok) {
+          const data = await response.json()
+          setActivities(data)
+        }
+      } catch (error) {
+        console.error("Error fetching activities:", error)
+      }
+    }
+    fetchActivities()
   }, [])
 
   function getActivityIcon(type: string) {

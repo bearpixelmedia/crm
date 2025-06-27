@@ -8,7 +8,7 @@ import { AlertCircle, CheckCircle, Loader2 } from "lucide-react"
 import { useData } from "@/context/data-context"
 
 export function DebugConnection() {
-  const { refreshData, usingMockData } = useData()
+  const { refreshData } = useData()
   const [testResult, setTestResult] = useState<{
     testing: boolean
     success?: boolean
@@ -51,17 +51,6 @@ export function DebugConnection() {
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
-          {usingMockData && (
-            <Alert variant="warning" className="bg-yellow-50 text-yellow-800 border-yellow-200">
-              <AlertCircle className="h-4 w-4 text-yellow-600" />
-              <AlertTitle>Using Mock Data</AlertTitle>
-              <AlertDescription>
-                The application is currently using mock data instead of Google Sheets data. This may be because the
-                environment variables are not set correctly or because you're in a preview environment.
-              </AlertDescription>
-            </Alert>
-          )}
-
           {testResult.testing ? (
             <div className="py-8 flex justify-center">
               <Loader2 className="h-8 w-8 animate-spin text-primary" />

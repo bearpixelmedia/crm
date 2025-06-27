@@ -16,6 +16,7 @@ import { CalendarIcon } from "lucide-react"
 import { format } from "date-fns"
 import { cn } from "@/lib/utils"
 import { toast } from "@/components/ui/use-toast"
+import { useData } from "@/context/data-context"
 
 const projectFormSchema = z.object({
   name: z.string().min(2, {
@@ -44,18 +45,10 @@ const projectFormSchema = z.object({
 
 type ProjectFormValues = z.infer<typeof projectFormSchema>
 
-// Mock client data - in a real implementation, this would come from your API
-const mockClients = [
-  { id: "client1", name: "Acme Corporation" },
-  { id: "client2", name: "Globex Industries" },
-  { id: "client3", name: "Initech LLC" },
-  { id: "client4", name: "Umbrella Corp" },
-  { id: "client5", name: "Stark Industries" },
-]
-
 export function ProjectForm({ project }: { project?: ProjectFormValues }) {
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
+  const { clients } = useData()
 
   // Default values for the form
   const defaultValues: Partial<ProjectFormValues> = {
@@ -131,7 +124,7 @@ export function ProjectForm({ project }: { project?: ProjectFormValues }) {
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    {mockClients.map((client) => (
+                    {clients.map((client) => (
                       <SelectItem key={client.id} value={client.id}>
                         {client.name}
                       </SelectItem>

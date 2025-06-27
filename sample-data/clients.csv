@@ -1,0 +1,6 @@
+ID,Name,Contact,Email,Phone,Status,Value
+CL001,Acme Corporation,John Smith,john@acmecorp.com,(555) 123-4567,Active,$15000
+CL002,TechNova Solutions,Sarah Johnson,sarah@technova.com,(555) 234-5678,Active,$12500
+CL003,Global Enterprises,Michael Brown,michael@globalent.com,(555) 345-6789,Inactive,$8000
+CL004,StartupXYZ,Emily Davis,emily@startupxyz.com,(555) 456-7890,Prospect,$25000
+CL005,MegaCorp Industries,David Wilson,david@megacorp.com,(555) 567-8901,Active,$50000 
