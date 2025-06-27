@@ -25,6 +25,14 @@ export function ProjectStats() {
   const [searchTerm, setSearchTerm] = useState("")
   const [statusFilter, setStatusFilter] = useState("all")
 
+  // Debug logging to check data structure
+  if (projects.length > 0) {
+    console.log("Sample project data:", projects[0])
+  }
+  if (clients.length > 0) {
+    console.log("Sample client data:", clients[0])
+  }
+
   // Show loading skeletons while data is being fetched
   if (isLoading) {
     return (
@@ -179,65 +187,83 @@ export function ProjectStats() {
                     <TableHead>Progress</TableHead>
                     <TableHead>Deadline</TableHead>
                     <TableHead>Budget</TableHead>
-                    <TableHead></TableHead>
+                    <TableHead className="w-[50px]"></TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {filteredProjects.map((project) => (
-                    <TableRow key={project.id}>
-                      <TableCell>
-                        <div>
-                          <div className="font-medium">{project.name}</div>
-                          {project.description && (
-                            <div className="text-sm text-muted-foreground">
-                              {project.description.length > 50 
-                                ? `${project.description.substring(0, 50)}...` 
-                                : project.description
-                              }
-                            </div>
-                          )}
-                        </div>
-                      </TableCell>
-                      <TableCell>{getClientName(project.clientId)}</TableCell>
-                      <TableCell>{project.type}</TableCell>
-                      <TableCell>
-                        <Badge className={getStatusColor(project.status)} variant="secondary">
-                          {project.status}
-                        </Badge>
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex items-center space-x-2">
-                          <Progress value={getProgress(project.status)} className="w-16" />
-                          <span className="text-sm text-muted-foreground">
-                            {getProgress(project.status)}%
-                          </span>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        {project.deadline ? new Date(project.deadline).toLocaleDateString() : "No deadline"}
-                      </TableCell>
-                      <TableCell>{project.budget || "Not set"}</TableCell>
-                      <TableCell>
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" className="h-8 w-8 p-0">
-                              <span className="sr-only">Open menu</span>
-                              <MoreHorizontal className="h-4 w-4" />
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                            <DropdownMenuItem>View details</DropdownMenuItem>
-                            <DropdownMenuItem>Edit project</DropdownMenuItem>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuItem className="text-red-600">
-                              Delete project
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </TableCell>
-                    </TableRow>
-                  ))}
+                  {filteredProjects.map((project) => {
+                    const clientName = getClientName(project.clientId)
+                    const progress = getProgress(project.status)
+                    const formattedDeadline = project.deadline 
+                      ? new Date(project.deadline).toLocaleDateString() 
+                      : "No deadline"
+                    const formattedBudget = project.budget || "Not set"
+                    
+                    // Debug log for each row
+                    console.log("Project row data:", {
+                      project: project.name,
+                      client: clientName,
+                      type: project.type,
+                      status: project.status,
+                      progress: progress,
+                      deadline: formattedDeadline,
+                      budget: formattedBudget
+                    })
+                    
+                    return (
+                      <TableRow key={project.id}>
+                        <TableCell>
+                          <div>
+                            <div className="font-medium">{project.name}</div>
+                            {project.description && (
+                              <div className="text-sm text-muted-foreground">
+                                {project.description.length > 50 
+                                  ? `${project.description.substring(0, 50)}...` 
+                                  : project.description
+                                }
+                              </div>
+                            )}
+                          </div>
+                        </TableCell>
+                        <TableCell>{clientName}</TableCell>
+                        <TableCell>{project.type}</TableCell>
+                        <TableCell>
+                          <Badge className={getStatusColor(project.status)} variant="secondary">
+                            {project.status}
+                          </Badge>
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex items-center space-x-2">
+                            <Progress value={progress} className="w-16" />
+                            <span className="text-sm text-muted-foreground">
+                              {progress}%
+                            </span>
+                          </div>
+                        </TableCell>
+                        <TableCell>{formattedDeadline}</TableCell>
+                        <TableCell>{formattedBudget}</TableCell>
+                        <TableCell>
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button variant="ghost" className="h-8 w-8 p-0">
+                                <span className="sr-only">Open menu</span>
+                                <MoreHorizontal className="h-4 w-4" />
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                              <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                              <DropdownMenuItem>View details</DropdownMenuItem>
+                              <DropdownMenuItem>Edit project</DropdownMenuItem>
+                              <DropdownMenuSeparator />
+                              <DropdownMenuItem className="text-red-600">
+                                Delete project
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        </TableCell>
+                      </TableRow>
+                    )
+                  })}
                 </TableBody>
               </Table>
             )}
