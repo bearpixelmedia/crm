@@ -24,7 +24,7 @@ type Task = {
 }
 
 export function TaskManagement() {
-  const { tasks } = useData()
+  const { tasks = [] } = useData()
   const [searchQuery, setSearchQuery] = useState("")
   const [filteredTasks, setFilteredTasks] = useState<Task[]>(tasks)
 

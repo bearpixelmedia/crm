@@ -90,6 +90,7 @@ export async function GET() {
       projects,
       clients,
       agents: [],
+      tasks: [],
       stats: {
         totalProjects: projects.length,
         totalClients: clients.length,
