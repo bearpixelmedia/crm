@@ -39,6 +39,7 @@ interface DataContextType {
   refreshData: () => Promise<void>
   getClientById: (id: string) => Client | undefined
   getProjectById: (id: string) => Project | undefined
+  agents: any[]
 }
 
 const DataContext = createContext<DataContextType | undefined>(undefined)
@@ -54,6 +55,7 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
     multiClientProjects: 0,
     multiProjectClients: 0
   })
+  const [agents, setAgents] = useState<any[]>([])
 
   const getClientById = (id: string) => clients.find(c => c.id === id)
   const getProjectById = (id: string) => projects.find(p => p.id === id)
@@ -77,6 +79,7 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
           multiClientProjects: 0,
           multiProjectClients: 0
         })
+        setAgents(data.agents || [])
       } else {
         throw new Error(data.error || "Unknown error")
       }
@@ -106,7 +109,8 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
       stats,
       refreshData,
       getClientById,
-      getProjectById
+      getProjectById,
+      agents
     }}>
       {children}
     </DataContext.Provider>

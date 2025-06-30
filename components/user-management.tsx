@@ -41,10 +41,10 @@ type User = {
 }
 
 export function UserManagement() {
-  const { agents } = useData()
-  const [users, setUsers] = useState<User[]>(agents)
+  const { agents = [] } = useData()
+  const [users, setUsers] = useState<User[]>(agents || [])
   const [searchQuery, setSearchQuery] = useState("")
-  const [filteredUsers, setFilteredUsers] = useState<User[]>(agents)
+  const [filteredUsers, setFilteredUsers] = useState<User[]>(agents || [])
   const [isAddUserOpen, setIsAddUserOpen] = useState(false)
   const [newUser, setNewUser] = useState<Partial<User>>({
     name: "",
@@ -55,8 +55,8 @@ export function UserManagement() {
   })
 
   useEffect(() => {
-    setUsers(agents)
-    setFilteredUsers(agents)
+    setUsers(agents || [])
+    setFilteredUsers(agents || [])
   }, [agents])
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -123,6 +123,9 @@ export function UserManagement() {
         return "bg-gray-100 text-gray-800"
     }
   }
+
+  // Defensive fallback for SSR/SSG
+  const safeFilteredUsers = Array.isArray(filteredUsers) ? filteredUsers : [];
 
   return (
     <div className="space-y-4">
@@ -239,10 +242,10 @@ export function UserManagement() {
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            {filteredUsers.length === 0 ? (
+            {safeFilteredUsers.length === 0 ? (
               <p className="text-center text-muted-foreground py-4">No users found</p>
             ) : (
-              filteredUsers.map((user) => (
+              safeFilteredUsers.map((user) => (
                 <div key={user.id} className="flex items-center justify-between border-b pb-4">
                   <div className="flex items-center space-x-4">
                     <Avatar>
