@@ -19,66 +19,20 @@ export const metadata: Metadata = {
   description: "Client Relationship Management for White Fox Studios",
 }
 
-export default function DashboardPage() {
+export default function HomePage() {
   return (
-    <div className="flex min-h-screen flex-col">
-      <div className="border-b">
-        <div className="flex h-16 items-center px-4">
-          <MainNav className="mx-6" />
-          <div className="ml-auto flex items-center space-x-4">
-            <Search />
-            <ProgressButton />
-            <UserNav />
-          </div>
+    <div className="p-6">
+      <h1 className="text-3xl font-bold mb-4">White Fox Studios CRM</h1>
+      <div className="space-y-4">
+        <p className="text-lg text-gray-600">Welcome to your CRM dashboard.</p>
+        <div className="space-y-2">
+          <a 
+            href="/projects" 
+            className="inline-block px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+          >
+            View Projects
+          </a>
         </div>
-      </div>
-      <div className="flex-1 space-y-4 p-8 pt-6">
-        <div className="flex items-center justify-between space-y-2">
-          <h2 className="text-3xl font-bold tracking-tight">Dashboard</h2>
-          <div className="flex items-center space-x-2">
-            <CalendarDateRangePicker />
-            <Button>Download</Button>
-          </div>
-        </div>
-        <Tabs defaultValue="overview" className="space-y-4">
-          <TabsList>
-            <TabsTrigger value="overview">Overview</TabsTrigger>
-            <TabsTrigger value="clients">Clients</TabsTrigger>
-            <TabsTrigger value="projects">Projects</TabsTrigger>
-            <TabsTrigger value="marketing">Marketing</TabsTrigger>
-          </TabsList>
-          <TabsContent value="overview" className="space-y-4">
-            <DashboardStats />
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
-              <Card className="col-span-4">
-                <CardHeader>
-                  <CardTitle>Overview</CardTitle>
-                </CardHeader>
-                <CardContent className="pl-2">
-                  <Overview />
-                </CardContent>
-              </Card>
-              <Card className="col-span-3">
-                <CardHeader>
-                  <CardTitle>Recent Sales</CardTitle>
-                  <CardDescription>Recent project revenue.</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <RecentSales />
-                </CardContent>
-              </Card>
-            </div>
-          </TabsContent>
-          <TabsContent value="clients" className="space-y-4">
-            <ClientStats />
-          </TabsContent>
-          <TabsContent value="projects" className="space-y-4">
-            <ProjectStats />
-          </TabsContent>
-          <TabsContent value="marketing" className="space-y-4">
-            <MarketingStats />
-          </TabsContent>
-        </Tabs>
       </div>
     </div>
   )

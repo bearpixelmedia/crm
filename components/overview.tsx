@@ -8,15 +8,6 @@ import { Skeleton } from "@/components/ui/skeleton"
 export function Overview() {
   const { projects, isLoading } = useData()
 
-  // Show loading skeleton while data is being fetched
-  if (isLoading) {
-    return (
-      <div className="h-[350px] w-full">
-        <Skeleton className="h-full w-full" />
-      </div>
-    )
-  }
-
   const chartData = useMemo(() => {
     // Calculate monthly revenue from projects
     const monthlyRevenue = {}
@@ -56,6 +47,15 @@ export function Overview() {
       total: monthlyRevenue[month]
     }))
   }, [projects])
+
+  // Show loading skeleton while data is being fetched
+  if (isLoading) {
+    return (
+      <div className="h-[350px] w-full">
+        <Skeleton className="h-full w-full" />
+      </div>
+    )
+  }
 
   // If no data available, show empty state
   if (projects.length === 0) {

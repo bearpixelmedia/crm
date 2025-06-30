@@ -25,14 +25,6 @@ export function ProjectStats() {
   const [searchTerm, setSearchTerm] = useState("")
   const [statusFilter, setStatusFilter] = useState("all")
 
-  // Debug logging to check data structure
-  if (projects.length > 0) {
-    console.log("Sample project data:", projects[0])
-  }
-  if (clients.length > 0) {
-    console.log("Sample client data:", clients[0])
-  }
-
   // Show loading skeletons while data is being fetched
   if (isLoading) {
     return (
@@ -73,7 +65,8 @@ export function ProjectStats() {
 
   // Filter projects based on search and status
   const filteredProjects = projects.filter((project) => {
-    const matchesSearch = project.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    const projectName = project.project || project.name || ""
+    const matchesSearch = projectName.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          project.description?.toLowerCase().includes(searchTerm.toLowerCase())
     const matchesStatus = statusFilter === "all" || project.status === statusFilter
     return matchesSearch && matchesStatus
@@ -113,9 +106,13 @@ export function ProjectStats() {
     }
   }
 
-  const getClientName = (clientId: string) => {
-    const client = clients.find(c => c.id === clientId)
-    return client?.name || "Unknown Client"
+  const getClientName = (project: any) => {
+    // Use new client field (contact person) first, fallback to old clientId lookup
+    if (project.client) {
+      return project.client
+    }
+    const client = clients.find(c => c.id === project.clientId)
+    return client?.name || project.clientId || "Unknown Client"
   }
 
   return (
@@ -125,8 +122,8 @@ export function ProjectStats() {
           <div className="flex items-center justify-between">
             <div>
               <CardTitle>Projects Overview</CardTitle>
-              <CardDescription>
-                Manage and track all your projects. {projects.length} total projects.
+                              <CardDescription>
+                Manage and track all your projects. {projects.length} total projects loaded.
               </CardDescription>
             </div>
             <Button>
@@ -187,46 +184,33 @@ export function ProjectStats() {
                     <TableHead>Progress</TableHead>
                     <TableHead>Deadline</TableHead>
                     <TableHead>Budget</TableHead>
+                    <TableHead>Email</TableHead>
+                    <TableHead>Phone</TableHead>
                     <TableHead className="w-[50px]"></TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {filteredProjects.map((project) => {
-                    const clientName = getClientName(project.clientId)
+                    const clientName = getClientName(project)
                     const progress = getProgress(project.status)
-                    const formattedDeadline = project.deadline 
-                      ? new Date(project.deadline).toLocaleDateString() 
-                      : "No deadline"
-                    const formattedBudget = project.budget || "Not set"
-                    
-                    // Debug log for each row
-                    console.log("Project row data:", {
-                      project: project.name,
-                      client: clientName,
-                      type: project.type,
-                      status: project.status,
-                      progress: progress,
-                      deadline: formattedDeadline,
-                      budget: formattedBudget
-                    })
+                    const projectName = project.project || project.name || "Unnamed Project"
+                    const formattedBudget = project.value || project.budget || "Not set"
+                    const progressValue = project.progress ? parseInt(project.progress) : progress
                     
                     return (
                       <TableRow key={project.id}>
                         <TableCell>
                           <div>
-                            <div className="font-medium">{project.name}</div>
+                            <div className="font-medium">{projectName}</div>
                             {project.description && (
                               <div className="text-sm text-muted-foreground">
-                                {project.description.length > 50 
-                                  ? `${project.description.substring(0, 50)}...` 
-                                  : project.description
-                                }
+                                {project.description}
                               </div>
                             )}
                           </div>
                         </TableCell>
                         <TableCell>{clientName}</TableCell>
-                        <TableCell>{project.type}</TableCell>
+                        <TableCell>{project.type || "n/a"}</TableCell>
                         <TableCell>
                           <Badge className={getStatusColor(project.status)} variant="secondary">
                             {project.status}
@@ -234,14 +218,33 @@ export function ProjectStats() {
                         </TableCell>
                         <TableCell>
                           <div className="flex items-center space-x-2">
-                            <Progress value={progress} className="w-16" />
+                            <Progress value={progressValue} className="w-16" />
                             <span className="text-sm text-muted-foreground">
-                              {progress}%
+                              {progressValue}%
                             </span>
                           </div>
                         </TableCell>
-                        <TableCell>{formattedDeadline}</TableCell>
+                        <TableCell>{project.deadline || "TBD"}</TableCell>
                         <TableCell>{formattedBudget}</TableCell>
+                        <TableCell>
+                          <div className="text-sm">
+                            {project.email && (
+                              <div className="truncate max-w-[150px]" title={project.email}>
+                                {project.email}
+                              </div>
+                            )}
+                            {project.billingEmail && project.billingEmail !== project.email && (
+                              <div className="text-xs text-muted-foreground truncate max-w-[150px]" title={project.billingEmail}>
+                                Billing: {project.billingEmail}
+                              </div>
+                            )}
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <div className="text-sm">
+                            {project.phone || "N/A"}
+                          </div>
+                        </TableCell>
                         <TableCell>
                           <DropdownMenu>
                             <DropdownMenuTrigger asChild>
