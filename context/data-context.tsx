@@ -1,135 +1,121 @@
 "use client"
 
-import type React from "react"
-import { createContext, useContext, useState, useEffect } from "react"
+import React, { createContext, useContext, useState, useEffect } from "react"
 
-// Define types for our data
-export type Client = {
+interface Project {
   id: string
   name: string
-  contact: string
-  email: string
-  phone: string
+  type: string
   status: string
-  value: string
-  projects?: Project[]
-}
-
-export type Project = {
-  id: string
-  name: string
-  clientId: string
-  type: "Website Build" | "Maintenance" | "SEO" | "Marketing" | "A la carte" | "Other"
-  status: "In Progress" | "Completed" | "Ongoing" | "Canceled" | "Not Started"
-  startDate: string
   deadline: string
-  description?: string
-  budget?: string
+  budget: string
+  clientIds: string[]
+  // Legacy fields
+  project: string
+  client: string
+  email: string
+  phone: string
 }
 
-export type Agent = {
+interface Client {
   id: string
   name: string
   email: string
   phone: string
-  specialties: string[]
-  capacity: number
-  currentWorkload?: number
+  projectIds: string[]
 }
 
-export type Task = {
-  id: string
-  title: string
-  description: string
-  projectId: string
-  assignedAgentId: string
-  status: "To Do" | "In Progress" | "Review" | "Completed" | "Blocked"
-  priority: "Low" | "Medium" | "High" | "Critical"
-  dueDate: string
-  estimatedHours?: number
-  actualHours?: number
-  createdDate: string
-}
-
-type DataContextType = {
-  clients: Client[]
+interface DataContextType {
   projects: Project[]
-  agents: Agent[]
-  tasks: Task[]
-  isLoading: boolean
+  clients: Client[]
+  loading: boolean
   error: string | null
+  stats: {
+    totalProjects: number
+    totalClients: number
+    multiClientProjects: number
+    multiProjectClients: number
+  }
   refreshData: () => Promise<void>
+  getClientById: (id: string) => Client | undefined
+  getProjectById: (id: string) => Project | undefined
+  agents: any[]
+  tasks: any[]
 }
 
 const DataContext = createContext<DataContextType | undefined>(undefined)
 
 export function DataProvider({ children }: { children: React.ReactNode }) {
-  const [clients, setClients] = useState<Client[]>([])
   const [projects, setProjects] = useState<Project[]>([])
-  const [agents, setAgents] = useState<Agent[]>([])
-  const [tasks, setTasks] = useState<Task[]>([])
-  const [isLoading, setIsLoading] = useState(true)
+  const [clients, setClients] = useState<Client[]>([])
+  const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [stats, setStats] = useState({
+    totalProjects: 0,
+    totalClients: 0,
+    multiClientProjects: 0,
+    multiProjectClients: 0
+  })
+  const [agents, setAgents] = useState<any[]>([])
+  const [tasks, setTasks] = useState<any[]>([])
 
-  // Update the loadData function to use the API route
-  const loadData = async () => {
-    setIsLoading(true)
-    setError(null)
+  const getClientById = (id: string) => clients.find(c => c.id === id)
+  const getProjectById = (id: string) => projects.find(p => p.id === id)
 
+  const fetchData = async () => {
     try {
-      // Fetch data from our API route
-      const response = await fetch("/api/google-sheets?type=all")
-
-      if (!response.ok) {
-        const errorData = await response.json()
-        throw new Error(errorData.error || "Failed to fetch data from API")
-      }
-
+      setLoading(true)
+      setError(null)
+      
+      const response = await fetch("/api/google-sheets")
+      if (!response.ok) throw new Error("Failed to fetch data")
+      
       const data = await response.json()
-
-      // Process the data to establish relationships
-      const clientsWithProjects = data.clients.map((client: Client) => ({
-        ...client,
-        projects: data.projects.filter((project: Project) => project.clientId === client.id),
-      }))
-
-      setClients(clientsWithProjects)
-      setProjects(data.projects)
-      setAgents(data.agents)
-      setTasks(data.tasks || [])
+      
+      if (data.success) {
+        setProjects(data.projects || [])
+        setClients(data.clients || [])
+        setStats(data.stats || {
+          totalProjects: 0,
+          totalClients: 0,
+          multiClientProjects: 0,
+          multiProjectClients: 0
+        })
+        setAgents(data.agents || [])
+        setTasks(data.tasks || [])
+      } else {
+        throw new Error(data.error || "Unknown error")
+      }
+      
     } catch (err) {
-      console.error("Error loading data from API:", err)
-      setError("Failed to load data from API.")
-      setClients([])
-      setProjects([])
-      setAgents([])
-      setTasks([])
+      setError(err instanceof Error ? err.message : "Failed to load data")
+      console.error("Data fetch error:", err)
     } finally {
-      setIsLoading(false)
+      setLoading(false)
     }
   }
 
-  // Load data on initial render
-  useEffect(() => {
-    loadData()
-  }, [])
-
   const refreshData = async () => {
-    await loadData()
+    await fetchData()
   }
 
+  useEffect(() => {
+    fetchData()
+  }, [])
+
   return (
-    <DataContext.Provider
-      value={{
-        clients,
-        projects,
-        agents,
-        tasks,
-        isLoading,
-        error,
-        refreshData,
-      }}
-    >
+    <DataContext.Provider value={{
+      projects,
+      clients,
+      loading,
+      error,
+      stats,
+      refreshData,
+      getClientById,
+      getProjectById,
+      agents,
+      tasks
+    }}>
       {children}
     </DataContext.Provider>
   )
@@ -137,7 +123,7 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
 
 export function useData() {
   const context = useContext(DataContext)
-  if (context === undefined) {
+  if (!context) {
     throw new Error("useData must be used within a DataProvider")
   }
   return context

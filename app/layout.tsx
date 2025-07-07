@@ -1,7 +1,8 @@
-import type React from "react"
 import "@/app/globals.css"
-import { Inter } from "next/font/google"
+import { AuthProvider } from "@/context/auth-context"
 import { DataProvider } from "@/context/data-context"
+import { Inter } from "next/font/google"
+import type React from "react"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -19,9 +20,11 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
-        <DataProvider>
-          {children}
-        </DataProvider>
+        <AuthProvider>
+          <DataProvider>
+            {children}
+          </DataProvider>
+        </AuthProvider>
       </body>
     </html>
   )

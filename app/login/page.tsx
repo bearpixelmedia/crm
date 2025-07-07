@@ -64,7 +64,7 @@ export default function LoginPage() {
               <Input
                 id="password"
                 type="password"
-                placeholder="••••••••"
+                placeholder={"\u2022".repeat(8)}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
@@ -75,14 +75,6 @@ export default function LoginPage() {
             </Button>
           </form>
         </CardContent>
-        <CardFooter className="flex flex-col space-y-4">
-          <div className="text-center text-sm text-muted-foreground">
-            <p>Demo Accounts:</p>
-            <p>admin@whitefox.com / admin123</p>
-            <p>manager@whitefox.com / manager123</p>
-            <p>agent@whitefox.com / agent123</p>
-          </div>
-        </CardFooter>
       </Card>
     </div>
   )

@@ -42,3 +42,72 @@ export type ReportSection = {
   dataSource?: string
   options?: any
 }
+
+// Legacy project type for backward compatibility
+export interface LegacyProject {
+  id: string
+  project: string
+  client: string
+  type: string
+  status: string
+  deadline: string
+  budget: string
+  email: string
+  phone: string
+  description?: string
+  progress: string
+}
+
+// New proper Project object
+export interface Project {
+  id: string
+  name: string
+  type: string
+  status: string
+  deadline: string
+  budget: string
+  description: string
+  progress: string
+  clientIds: string[] // Array of client IDs associated with this project
+  createdAt: string
+  updatedAt: string
+  
+  // Legacy fields for backward compatibility
+  project: string
+  client: string
+  email: string
+  phone: string
+}
+
+// New Client object
+export interface Client {
+  id: string
+  name: string
+  email: string
+  phone: string
+  projectIds: string[] // Array of project IDs associated with this client
+  createdAt: string
+  updatedAt: string
+}
+
+// API Response structure
+export interface ProjectsApiResponse {
+  projects: Project[]
+  clients: Client[]
+  relationships: {
+    totalProjects: number
+    totalClients: number
+    projectsWithMultipleClients: number
+    clientsWithMultipleProjects: number
+  }
+  message: string
+}
+
+// Helper types for relationships
+export interface ProjectWithClients extends Project {
+  clients: Client[]
+}
+
+export interface ClientWithProjects extends Client {
+  projects: Project[]
+}
