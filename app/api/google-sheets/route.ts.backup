@@ -75,31 +75,17 @@ export async function GET(request: Request) {
       })
 
       const projectRows = projectResponse.data.values || []
-      
-      responseData.projects = projectRows.map((row, index) => {
-        return {
-          // NEW FIELD STRUCTURE - FINAL CORRECTED MAPPING
-          id: generateId("PRJ"),
-          project: row[1] || "Unknown Project",     // Business name
-          client: row[2] || "Unknown Client",       // Contact person  
-          type: "Website",                          // Default type
-          status: row[3] || "Active",               // Status (n/a, Invoice, etc.)
-          progress: "75%",                          // Default progress
-          deadline: row[6] || "01/01/2026",         // Deadline
-          value: row[7] || "$0.00",                 // CORRECTED: Budget amount should be in row[7]
-          email: row[8] || "",                      // CORRECTED: Email should be in row[8]
-          billingEmail: row[9] || "",               // Billing email
-          phone: row[10] || "",                     // Phone
-          website: row[11] || "",                   // Website
-          
-          // LEGACY FIELDS FOR COMPATIBILITY  
-          name: row[1] || "Unknown Project",        // Business name
-          clientId: row[2] || "",                   // Contact person
-          startDate: "2024-01-01",
-          description: row[7] || "",                // Budget amount
-          budget: row[7] || "",                     // Budget amount
-        }
-      })
+      responseData.projects = projectRows.map((row, index) => ({
+        id: row[0] || generateId("PRJ"),
+        name: row[1] || "Unknown Project",
+        clientId: row[2] || "", // Reference to client ID
+        type: row[3] || "Other",
+        status: row[4] || "Not Started", 
+        startDate: row[5] || new Date().toISOString(),
+        deadline: row[6] || new Date().toISOString(),
+        description: row[7] || "",
+        budget: row[8] || "$0",
+      }))
     }
 
     // Fetch agent data if requested

@@ -1,0 +1,16 @@
+ID,Title,Start,End,Type,Client,Project,Description,All Day
+EVT001,Client Meeting - Acme Corp,2023-08-15T10:00:00Z,2023-08-15T11:30:00Z,meeting,Acme Corporation,Website Redesign,Discuss website redesign progress and next steps,false
+EVT002,SEO Strategy Session,2023-08-16T14:00:00Z,2023-08-16T15:00:00Z,meeting,TechNova Solutions,SEO Campaign,Review keyword research and content strategy,false
+EVT003,Project Deadline,2023-08-20T00:00:00Z,2023-08-20T23:59:59Z,reminder,Global Enterprises,Brand Identity,Brand identity project final deadline,true
+EVT004,Team Standup,2023-08-14T09:30:00Z,2023-08-14T10:00:00Z,meeting,,,Daily team standup meeting,false
+EVT005,Mobile App Kickoff,2023-08-21T13:00:00Z,2023-08-21T15:00:00Z,meeting,Acme Corporation,Mobile App,Project kickoff meeting for mobile app development,false
+EVT006,Marketing Review,2023-08-18T11:00:00Z,2023-08-18T12:00:00Z,meeting,MegaCorp Industries,Digital Marketing,Monthly marketing campaign review,false
+EVT007,Development Sprint Planning,2023-08-22T09:00:00Z,2023-08-22T10:30:00Z,meeting,StartupXYZ,E-commerce Platform,Sprint planning for e-commerce development,false
+EVT008,Client Check-in Call,2023-08-17T15:00:00Z,2023-08-17T15:30:00Z,meeting,TechNova Solutions,SEO Campaign,Weekly check-in call with client,false
+EVT009,Design Review,2023-08-23T14:00:00Z,2023-08-23T15:30:00Z,meeting,Acme Corporation,Website Redesign,Review website design mockups,false
+EVT010,Content Strategy Meeting,2023-08-24T10:00:00Z,2023-08-24T11:00:00Z,meeting,Digital Dynamics,Content Strategy,Discuss content strategy and calendar,false
+EVT011,Maintenance Check,2023-08-25T09:00:00Z,2023-08-25T10:00:00Z,meeting,Innovation Labs,Website Maintenance,Monthly website maintenance review,false
+EVT012,Social Media Planning,2023-08-28T13:00:00Z,2023-08-28T14:00:00Z,meeting,Creative Solutions,Social Media Management,Plan September social media content,false
+EVT013,Analytics Review,2023-08-29T11:00:00Z,2023-08-29T12:00:00Z,meeting,TechStart Inc,Analytics Setup,Review analytics implementation and data,false
+EVT014,Project Milestone,2023-08-30T00:00:00Z,2023-08-30T23:59:59Z,reminder,Acme Corporation,Mobile App,Mobile app development milestone deadline,true
+EVT015,Team Training,2023-08-31T14:00:00Z,2023-08-31T16:00:00Z,meeting,,,New tools and processes training session,false 

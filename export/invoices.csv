@@ -1,0 +1,11 @@
+ID,Client ID,Project ID,Number,Date,Due Date,Status,Subtotal,Tax,Total,Notes,Items
+INV001,CL001,PRJ001,INV-2023-001,2023-08-01,2023-08-15,paid,5000,500,5500,Thank you for your business!,"[{""id"":""item1"",""description"":""Website Design Phase 1"",""quantity"":1,""rate"":5000,""amount"":5000}]"
+INV002,CL002,PRJ002,INV-2023-002,2023-08-05,2023-08-20,pending,3000,300,3300,SEO services for July,"[{""id"":""item1"",""description"":""SEO Optimization"",""quantity"":1,""rate"":3000,""amount"":3000}]"
+INV003,CL003,PRJ003,INV-2023-003,2023-08-10,2023-08-25,paid,8000,800,8800,Final payment for branding project,"[{""id"":""item1"",""description"":""Brand Identity Package"",""quantity"":1,""rate"":8000,""amount"":8000}]"
+INV004,CL005,PRJ005,INV-2023-004,2023-08-15,2023-08-30,draft,2500,250,2750,Monthly marketing retainer,"[{""id"":""item1"",""description"":""Digital Marketing Services"",""quantity"":1,""rate"":2500,""amount"":2500}]"
+INV005,CL001,PRJ006,INV-2023-005,2023-08-20,2023-09-05,overdue,10000,1000,11000,Mobile app development milestone 1,"[{""id"":""item1"",""description"":""Mobile App Development"",""quantity"":1,""rate"":10000,""amount"":10000}]"
+INV006,CL004,PRJ004,INV-2023-006,2023-08-25,2023-09-10,draft,15000,1500,16500,E-commerce platform development,"[{""id"":""item1"":"description"":""E-commerce Development"",""quantity"":1,""rate"":15000,""amount"":15000}]"
+INV007,CL006,PRJ007,INV-2023-007,2023-09-01,2023-09-16,pending,4000,400,4400,Content strategy consultation,"[{""id"":""item1"",""description"":""Content Strategy"",""quantity"":1,""rate"":4000,""amount"":4000}]"
+INV008,CL007,PRJ008,INV-2023-008,2023-09-05,2023-09-20,draft,500,50,550,Monthly maintenance fee,"[{""id"":""item1"",""description"":""Website Maintenance"",""quantity"":1,""rate"":500,""amount"":500}]"
+INV009,CL008,PRJ009,INV-2023-009,2023-09-10,2023-09-25,pending,1000,100,1100,Social media management - September,"[{""id"":""item1"",""description"":""Social Media Management"",""quantity"":1,""rate"":1000,""amount"":1000}]"
+INV010,CL009,PRJ010,INV-2023-010,2023-07-01,2023-07-16,paid,3000,300,3300,Analytics setup and training,"[{""id"":""item1"",""description"":""Analytics Setup"",""quantity"":1,""rate"":3000,""amount"":3000}]" 

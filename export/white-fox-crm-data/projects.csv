@@ -1,0 +1,11 @@
+ID,Name,ClientId,Type,Status,StartDate,Deadline,Description,Budget
+PRJ001,Website Redesign,CL001,Website Build,In Progress,2023-06-15,2023-09-30,Complete redesign of corporate website,$10000
+PRJ002,SEO Campaign,CL002,SEO,In Progress,2023-07-01,2023-10-15,Comprehensive SEO optimization,$5000
+PRJ003,Brand Identity,CL003,Branding,Completed,2023-05-10,2023-08-20,Complete brand identity redesign,$8000
+PRJ004,E-commerce Platform,CL004,Website Build,Not Started,2023-08-01,2023-12-15,Build custom e-commerce solution,$25000
+PRJ005,Digital Marketing,CL005,Marketing,In Progress,2023-07-15,2024-01-15,Full digital marketing campaign,$15000
+PRJ006,Mobile App,CL001,App Development,In Progress,2023-08-01,2024-02-28,iOS and Android mobile application,$35000
+PRJ007,Content Strategy,CL006,Marketing,Not Started,2023-09-01,2023-12-01,Develop comprehensive content strategy,$8000
+PRJ008,Website Maintenance,CL007,Maintenance,In Progress,2023-08-15,2024-08-15,Monthly website maintenance and updates,$6000
+PRJ009,Social Media Management,CL008,Marketing,Ongoing,2023-07-01,2024-07-01,Social media content creation and management,$12000
+PRJ010,Analytics Setup,CL009,SEO,Completed,2023-06-01,2023-07-01,Google Analytics and tracking setup,$3000 

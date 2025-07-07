@@ -2,15 +2,13 @@ import type React from "react"
 import "@/app/globals.css"
 import { Inter } from "next/font/google"
 import { DataProvider } from "@/context/data-context"
-import { ProgressProvider } from "@/context/progress-context"
-import { AuthProvider } from "@/context/auth-context"
 
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata = {
   title: "White Fox Studios CRM",
   description: "Client Relationship Management for White Fox Studios",
-    generator: 'v0.dev'
+  generator: 'v0.dev'
 }
 
 export default function RootLayout({
@@ -21,11 +19,9 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
-        <AuthProvider>
-          <DataProvider>
-            <ProgressProvider>{children}</ProgressProvider>
-          </DataProvider>
-        </AuthProvider>
+        <DataProvider>
+          {children}
+        </DataProvider>
       </body>
     </html>
   )

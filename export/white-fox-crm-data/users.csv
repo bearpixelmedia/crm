@@ -1,0 +1,13 @@
+ID,Name,Email,Password Hash,Role,Avatar,Status
+USR001,Admin User,admin@whitefox.com,admin123,admin,/avatar-admin.png,active
+USR002,Carol Martinez,carol@whitefox.com,manager123,manager,/avatar-carol.png,active
+USR003,Alice Johnson,alice@whitefox.com,agent123,agent,/avatar-alice.png,active
+USR004,Bob Williams,bob@whitefox.com,agent123,agent,/avatar-bob.png,active
+USR005,David Chen,david@whitefox.com,agent123,agent,/avatar-david.png,active
+USR006,Emma Thompson,emma@whitefox.com,agent123,agent,/avatar-emma.png,active
+USR007,Frank Rodriguez,frank@whitefox.com,agent123,agent,/avatar-frank.png,active
+USR008,Grace Lee,grace@whitefox.com,agent123,agent,/avatar-grace.png,active
+USR009,Henry Kim,henry@whitefox.com,agent123,agent,/avatar-henry.png,active
+USR010,Ivy Patel,ivy@whitefox.com,agent123,agent,/avatar-ivy.png,active
+USR011,Jack Wilson,jack@whitefox.com,agent123,agent,/avatar-jack.png,active
+USR012,Manager User,manager@whitefox.com,manager123,manager,/avatar-manager.png,active 
